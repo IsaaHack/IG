@@ -6,6 +6,7 @@
 #include <vector>
 
 using namespace std;
+using namespace ply;
 
 class Malla : public Objeto3D
 {

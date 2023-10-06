@@ -2,5 +2,12 @@
     "files.associations": {
         "stdio.h": "c",
         "vector": "cpp"
-    }
+    },
+    "makefile.launchConfigurations": [
+        {
+            "cwd": "/home/isaac/IG",
+            "binaryPath": "/home/isaac/IG/practicasIG",
+            "binaryArgs": []
+        }
+    ]
 }

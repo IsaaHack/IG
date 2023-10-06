@@ -17,15 +17,18 @@ EJECUTABLE=  practicasIG
 #
 #
 
-MODULOS=  $(EJECUTABLE).o entradaTeclado.o visual.o mouse.o modelo.o  file_ply_stl.o vector3D.o escalera.o cubo.o ejes.o piramide_doble_generica.o piramide.o
+MODULOS = $(patsubst %.c,%.o,$(wildcard ./src/*.c)) $(patsubst %.cc,%.o,$(wildcard ./src/*.cc)) $(patsubst %.cpp,%.o,$(wildcard ./src/*.cpp))
 
+#MODULOS=  $(EJECUTABLE).o entradaTeclado.o visual.o mouse.o modelo.o  file_ply_stl.o vector3D.o escalera.o cubo.o ejes.o piramide_doble_generica.o piramide.o
+#MODULOS= ./src/$(EJECUTABLE).o ./src/entradaTeclado.o ./src/visual.o ./src/mouse.o ./src/modelo.o ./src/file_ply_stl.o ./src/vector3D.o ./src/escalera.o ./src/cubo.o ./src/ejes.o ./src/piramide_doble_generica.o ./src/piramide.o ./src/malla.o
 
 #  INCLUDEDIRS= Lista de caminos a los directorios donde se encuentran
 #              	ficheros include. Si se cambia de instalaci� es posible
 #		que se deban modificar. 
 #
 
-INCLUDEDIR= /usr/X11R6/include 
+INCLUDEDIR= /usr/X11R6/include
+INCLUDEDIR2= ./include
 #MESAINCLUDE= /usr/X11R6/Mesa-3.0/include
 
 #  LIBSDIRS= 	Lista de caminos a los directorios donde se encuentran
@@ -33,7 +36,7 @@ INCLUDEDIR= /usr/X11R6/include
 #		que se deban modificar. Ver lista de librerias mas abajo
 #
 
-LIBSDIR= /usr/X11R6/lib 
+LIBSDIR= /usr/X11R6/lib
 #MESALIB= /usr/X11R6/Mesa-3.0/lib  
 
 ################ NO MODIFICAR A PARTIR DE AQUI ########################
@@ -44,14 +47,14 @@ LIBSDIR= /usr/X11R6/lib
 #             -c   (solo compilar cada modulo, no linkar)
 #             -I   (indicamos directiorios donde buscar los include)
 
-CFLAGS=  -g -c -DXWINDOWS  -I$(INCLUDEDIR) 
-
+CFLAGS=  -g -c -DXWINDOWS  -I$(INCLUDEDIR) -I$(INCLUDEDIR2)
+CPPFLAGS=  -g -c -DXWINDOWS  -I$(INCLUDEDIR) -I$(INCLUDEDIR2)
        
 #  LDFLAGS= Parametros para el linkador. (ld)
 #           le decimos que busque las librerias 
 #           de X WINDOWS en el directorio indicado         
 
-LDFLAGS=   -L$(LIBSDIR) 
+LDFLAGS=   -L$(LIBSDIR)
 #  LIBS= librerias que vamos a linkar para hacer nuestro programa
 #
 #        en este caso necesitamos las siguientes:
@@ -74,7 +77,32 @@ CC=        g++
 #   ficheros objeto que aun no esten compilados y despues linkarlos 
 #   todos juntos.
 
-$(EJECUTABLE): $(MODULOS)	
-	$(CC)  -o$(EJECUTABLE) $(LDFLAGS) $(MODULOS)  $(LIBS)   
+$(EJECUTABLE): $(MODULOS)
+	$(CC) -o $(EJECUTABLE) $(LDFLAGS) $(MODULOS) $(LIBS)
+	mv $(EJECUTABLE) ./build
+	mv ./src/*.o ./bin
+
+clean:
+	rm -f ./bin/*.o ./build/$(EJECUTABLE) ./src/*.o
+
+zip:
+	zip -r practicasIG.zip *.cpp *.h *.cc *.hh *.c *.txt *.pdf *.jpg *.png *.ply *.stl Makefile
+
+organize:
+	mkdir -p include src build bin
+	mv *.h include
+	mv *.c src
+	mv *.cc src
+	mv *.cpp src
+	mv *.o bin
+	mv $(EJECUTABLE) build
+
+desorganize:
+	mv include/*.h .
+	mv src/*.c .
+	mv src/*.cc .
+	mv src/*.cpp .
+	rm -r include src build bin
+
 
 

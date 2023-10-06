@@ -1,7 +1,7 @@
 #include "malla.h"
 
 void Malla::cargar(const char *nombre_archivo_ply){
-    ply::read(nombre_archivo_ply, vertices, caras);
+    read(nombre_archivo_ply, vertices, caras);
 
     for(int i = 0; i < caras.size(); i += 3){
         Vector3D p1(vertices[caras[i] * 3], vertices[caras[i] * 3 + 1], vertices[caras[i] * 3 + 2]);
@@ -13,4 +13,8 @@ void Malla::cargar(const char *nombre_archivo_ply){
 
 Malla::Malla(const char *nombre_archivo_ply){
     cargar(nombre_archivo_ply);
+}
+
+void Malla::draw()
+{
 }
