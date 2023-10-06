@@ -30,6 +30,8 @@
 #ifndef MODELO_H
 #define MODELO_H
 
+#include "vector3D.h"
+
 /**
 	Funcion de redibujado. Se ejecuta con los eventos postRedisplay
 **/
@@ -53,39 +55,19 @@ void setModo(int M);
 /** Interruptor de la iluminación*/
 void switchIluminacion();
 
-class Objeto3D 
-{ 
+class Objeto3D { 
 public: 
-
-virtual void draw( ) = 0; // Dibuja el objeto
-} ; 
-
-
-class Punto3D{
-public:
-  Punto3D(GLfloat x, GLfloat y, GLfloat z){
-	this->x = x;
-	this->y = y;
-	this->z = z;
-  }
-  Punto3D(){
-	x = 0;
-	y = 0;
-	z = 0;
-  }
-  
-  void dibuja() const;
-  void normalizar();
-
-  GLfloat x, y, z;
+	virtual void draw( ) = 0; // Dibuja el objeto
 };
 
-void hacerNormal(const Punto3D &p1, const Punto3D &p2, const Punto3D &p3);
+void hacerNormal(const Vector3D &p1, const Vector3D &p2, const Vector3D &p3);
 
-void dibujaTriangulo(const Punto3D &p1, const Punto3D &p2, const Punto3D &p3);
+Vector3D obtenerNormal(const Vector3D &p1, const Vector3D &p2, const Vector3D &p3);
 
-void dibujaCuadrado(const Punto3D &p1, const Punto3D &p2, const Punto3D &p3, const Punto3D &p4);
+void dibujaTriangulo(const Vector3D &p1, const Vector3D &p2, const Vector3D &p3);
 
-void dibujaCuadrado(const Punto3D &normal, Punto3D &p1, const Punto3D &p2, const Punto3D &p3, const Punto3D &p4);
+void dibujaCuadrado(const Vector3D &p1, const Vector3D &p2, const Vector3D &p3, const Vector3D &p4);
+
+void dibujaCuadrado(const Vector3D &normal, Vector3D &p1, const Vector3D &p2, const Vector3D &p3, const Vector3D &p4);
 
 #endif

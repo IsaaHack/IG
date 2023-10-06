@@ -17,7 +17,7 @@ EJECUTABLE=  practicasIG
 #
 #
 
-MODULOS=  $(EJECUTABLE).o entradaTeclado.o visual.o mouse.o modelo.o  file_ply_stl.o
+MODULOS=  $(EJECUTABLE).o entradaTeclado.o visual.o mouse.o modelo.o  file_ply_stl.o vector3D.o escalera.o cubo.o ejes.o piramide_doble_generica.o piramide.o
 
 
 #  INCLUDEDIRS= Lista de caminos a los directorios donde se encuentran

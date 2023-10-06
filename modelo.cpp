@@ -36,20 +36,19 @@ modulo modelo.c
 #include <GL/glut.h> // Libreria de utilidades de OpenGL
 #include "practicasIG.h"
 #include "modelo.h"
+#include "ejes.h"
+#include "cubo.h"
+#include "piramide.h"
+#include "escalera.h"
+#include "piramide_doble_generica.h"
 
-void Punto3D::dibuja() const{
-    glVertex3f(x, y, z);
+void hacerNormal(const Vector3D &p1, const Vector3D &p2, const Vector3D &p3){
+  Vector3D normal = obtenerNormal(p1, p2, p3);
+  glNormal3f(normal.x, normal.y, normal.z);
 }
 
-void Punto3D::normalizar(){
-  GLfloat modulo = sqrt(x * x + y * y + z * z);
-  x /= modulo;
-  y /= modulo;
-  z /= modulo;
-}
-
-void hacerNormal(const Punto3D &p1, const Punto3D &p2, const Punto3D &p3){
-  Punto3D v1, v2, normal;
+Vector3D obtenerNormal(const Vector3D &p1, const Vector3D &p2, const Vector3D &p3){
+  Vector3D v1, v2, normal;
   v1.x = p2.x - p1.x;
   v1.y = p2.y - p1.y;
   v1.z = p2.z - p1.z;
@@ -60,10 +59,10 @@ void hacerNormal(const Punto3D &p1, const Punto3D &p2, const Punto3D &p3){
   normal.y = v1.z * v2.x - v1.x * v2.z;
   normal.z = v1.x * v2.y - v1.y * v2.x;
   normal.normalizar();
-  glNormal3f(normal.x, normal.y, normal.z);
+  return normal;
 }
 
-void dibujaTriangulo(const Punto3D &p1, const Punto3D &p2, const Punto3D &p3){
+void dibujaTriangulo(const Vector3D &p1, const Vector3D &p2, const Vector3D &p3){
   glBegin(GL_TRIANGLES);
   {
     hacerNormal(p1, p2, p3);
@@ -74,12 +73,12 @@ void dibujaTriangulo(const Punto3D &p1, const Punto3D &p2, const Punto3D &p3){
   glEnd();
 }
 
-void dibujaCuadrado(const Punto3D &p1, const Punto3D &p2, const Punto3D &p3, const Punto3D &p4){
+void dibujaCuadrado(const Vector3D &p1, const Vector3D &p2, const Vector3D &p3, const Vector3D &p4){
   dibujaTriangulo(p1, p2, p3);
   dibujaTriangulo(p1, p3, p4);
 }
 
-void dibujaCuadrado(const Punto3D &normal, Punto3D &p1, const Punto3D &p2, const Punto3D &p3, const Punto3D &p4){
+void dibujaCuadrado(const Vector3D &normal, Vector3D &p1, const Vector3D &p2, const Vector3D &p3, const Vector3D &p4){
   glNormal3f(normal.x, normal.y, normal.z);
   glBegin(GL_QUADS);
   {
@@ -90,181 +89,6 @@ void dibujaCuadrado(const Punto3D &normal, Punto3D &p1, const Punto3D &p2, const
   }
   glEnd();
 }
-
-class Ejes : public Objeto3D{
-public:
-  float longitud = 30;
-  // Dibuja el objeto
-  void draw()
-  {
-    glDisable(GL_LIGHTING);
-    glBegin(GL_LINES);
-    {
-      glColor3f(0, 1, 0);
-      glVertex3f(0, 0, 0);
-      glVertex3f(0, longitud, 0);
-
-      glColor3f(1, 0, 0);
-      glVertex3f(0, 0, 0);
-      glVertex3f(longitud, 0, 0);
-
-      glColor3f(0, 0, 1);
-      glVertex3f(0, 0, 0);
-      glVertex3f(0, 0, longitud);
-    }
-    glEnd();
-    glEnable(GL_LIGHTING);
-  }
-};
-
-class Cubo : public Objeto3D{
-private:
-  int lado;
-
-public:
-  Cubo(float lado)
-  {
-    this->lado = lado;
-  }
-
-  void draw()
-  {
-    float x, y, z;
-    x = y = z = lado;
-    //float color[4] = {0.8, 0.0, 1, 1};
-    //glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, color);
-    glBegin(GL_QUAD_STRIP);
-    {                            /* Caras transversales */
-      glNormal3f(0.0, 0.0, 1.0); /*Vertical delantera */
-      glVertex3f(x, y, z);
-      glVertex3f(0, y, z);
-      glVertex3f(x, 0, z);
-      glVertex3f(0, 0, z);
-      glNormal3f(0.0, -1.0, 0.0); /*Inferior */
-      glVertex3f(x, 0, 0);
-      glVertex3f(0, 0, 0);
-      glNormal3f(0.0, 0.0, -1.0); /* Vertical hacia atras */
-      glVertex3f(x, y, 0);
-      glVertex3f(0, y, 0);
-      glNormal3f(0.0, 1.0, 0.0); /* Superior, horizontal */
-      glVertex3f(x, y, z);
-      glVertex3f(0, y, z);
-    }
-    glEnd();
-    glBegin(GL_QUADS);
-    { /* Costados */
-      glNormal3f(1.0, 0.0, 0.0);
-      glVertex3f(x, 0, 0);
-      glVertex3f(x, y, 0);
-      glVertex3f(x, y, z);
-      glVertex3f(x, 0, z);
-      glNormal3f(-1.0, 0.0, 0.0);
-      glVertex3f(0, 0, 0);
-      glVertex3f(0, 0, z);
-      glVertex3f(0, y, z);
-      glVertex3f(0, y, 0);
-    }
-    glEnd();
-  }
-};
-
-class Piramide : public Objeto3D{
-  private:
-    float lado, alto;
-    
-    Punto3D puntos[5];
-  public:
-    Piramide(float lado, float alto){
-      this->lado = lado;
-      this->alto = alto;
-      puntos[0] = Punto3D(lado/2, alto, lado/2);
-      puntos[1] = Punto3D(0, 0, 0);
-      puntos[2] = Punto3D(lado, 0, lado);
-      puntos[3] = Punto3D(lado, 0, 0);
-      puntos[4] = Punto3D(0, 0, lado);
-    }
-
-    void draw(){
-      dibujaCuadrado(puntos[1], puntos[3], puntos[2], puntos[4]);
-      dibujaTriangulo(puntos[0], puntos[2], puntos[3]);
-      dibujaTriangulo(puntos[0], puntos[4], puntos[2]);
-      dibujaTriangulo(puntos[0], puntos[1], puntos[4]);
-      dibujaTriangulo(puntos[0], puntos[3], puntos[1]);
-    }
-};
-
-class Escalera : public Objeto3D{
-  private:
-    float lado, alto;
-    Punto3D puntos[12];
-  public:
-    Escalera(float lado, float alto){
-      this->lado = lado;
-      this->alto = alto;
-      puntos[0] = Punto3D(0, 0, 0);
-      puntos[1] = Punto3D(lado, 0, 0);
-      puntos[2] = Punto3D(lado, 0, lado);
-      puntos[3] = Punto3D(0, 0, lado);
-      puntos[4] = Punto3D(lado, alto/2, 0);
-      puntos[5] = Punto3D(lado, alto/2, lado);
-      puntos[6] = Punto3D(lado/2, alto/2, lado);
-      puntos[7] = Punto3D(lado/2, alto/2, 0);
-      puntos[8] = Punto3D(lado/2, alto, 0);
-      puntos[9] = Punto3D(lado/2, alto, lado);
-      puntos[10] = Punto3D(0, alto, lado);
-      puntos[11] = Punto3D(0, alto, 0);
-    }
-
-    void draw(){
-      dibujaCuadrado(puntos[0], puntos[1], puntos[2], puntos[3]);//Base
-      dibujaCuadrado(puntos[4], puntos[7], puntos[6], puntos[5]);//Primer escalon
-      dibujaCuadrado(puntos[8], puntos[11], puntos[10], puntos[9]);//Segundo escalon
-      dibujaCuadrado(puntos[0], puntos[3], puntos[10], puntos[11]);//Atras
-      dibujaCuadrado(puntos[1], puntos[4], puntos[5], puntos[2]);//Frente primer escalon
-      dibujaCuadrado(puntos[7], puntos[8], puntos[9], puntos[6]);//Frente segundo escalon
-      dibujaCuadrado(puntos[2], puntos[5], puntos[6], puntos[3]);//Lado derecho primera parte
-      dibujaCuadrado(puntos[3], puntos[6], puntos[9], puntos[10]);//Lado derecho segunda parte
-      dibujaCuadrado(puntos[0], puntos[7], puntos[4], puntos[1]);//Lado izquierdo primera parte
-      dibujaCuadrado(puntos[0], puntos[11], puntos[8], puntos[7]);//Lado izquierdo segunda parte
-    }
-};
-
-class Piramide_doble_generica :public Objeto3D{
-  private:
-    float radio, alto;
-    int num_lados;
-    Punto3D puntos[52];
-  public:
-    Piramide_doble_generica(float radio, float alto, int num_lados){
-      this->radio = radio;
-      this->alto = alto;
-      if(num_lados <= 50)
-        this->num_lados = num_lados;
-      else
-        this->num_lados = 50;
-      
-      for(int i = 0; i < num_lados; i++){
-        puntos[i] = Punto3D(radio * (1 + cos(2 * M_PI * i / num_lados)), 0, radio * (1 + sin(2 * M_PI * i / num_lados)));
-      }
-      puntos[num_lados + 1] = Punto3D(radio, alto, radio);
-      puntos[num_lados + 2] = Punto3D(radio, -alto, radio);
-    }
-
-    void draw(){
-      for(int i = 0; i < num_lados; i++){
-        dibujaTriangulo(puntos[(i + 1) % num_lados], puntos[i] , puntos[num_lados + 1]);
-        dibujaTriangulo(puntos[i], puntos[(i + 1) % num_lados], puntos[num_lados + 2]);
-      }
-      dibujaTriangulo(puntos[1], puntos[0], puntos[4]);
-      dibujaTriangulo(puntos[2], puntos[1], puntos[4]);
-      dibujaTriangulo(puntos[3], puntos[2], puntos[4]);
-      dibujaTriangulo(puntos[0], puntos[3], puntos[4]);
-      dibujaTriangulo(puntos[0], puntos[1], puntos[5]);
-      dibujaTriangulo(puntos[1], puntos[2], puntos[5]);
-      dibujaTriangulo(puntos[2], puntos[3], puntos[5]);
-      dibujaTriangulo(puntos[3], puntos[0], puntos[5]);
-    }
-};
 
 int modo;
 bool iluminacion;
