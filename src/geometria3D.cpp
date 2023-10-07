@@ -32,6 +32,20 @@ Vector3D obtenerNormal(const Punto3D &p1, const Punto3D &p2, const Punto3D &p3){
   return normal;
 }
 
+Vector3D obtenerNormalSinNormalizar(const Punto3D &p1, const Punto3D &p2, const Punto3D &p3){
+  Vector3D v1, v2, normal;
+  v1.x = p2.x - p1.x;
+  v1.y = p2.y - p1.y;
+  v1.z = p2.z - p1.z;
+  v2.x = p3.x - p1.x;
+  v2.y = p3.y - p1.y;
+  v2.z = p3.z - p1.z;
+  normal.x = v1.y * v2.z - v1.z * v2.y;
+  normal.y = v1.z * v2.x - v1.x * v2.z;
+  normal.z = v1.x * v2.y - v1.y * v2.x;
+  return normal;
+}
+
 void dibujaTriangulo(const Punto3D &p1, const Punto3D &p2, const Punto3D &p3){
   glBegin(GL_TRIANGLES);
   {
@@ -43,7 +57,7 @@ void dibujaTriangulo(const Punto3D &p1, const Punto3D &p2, const Punto3D &p3){
   glEnd();
 }
 
-void dibujaTriangulo(const Vector3D &normal, Punto3D &p1, const Punto3D &p2, const Punto3D &p3){
+void dibujaTriangulo(const Vector3D &normal, const Punto3D &p1, const Punto3D &p2, const Punto3D &p3){
   glBegin(GL_TRIANGLES);
   {
     glNormal3f(normal.x, normal.y, normal.z);
@@ -69,4 +83,16 @@ void dibujaCuadrado(const Vector3D &normal, const Punto3D &p1, const Punto3D &p2
     p4.dibuja();
   }
   glEnd();
+}
+
+Triangulo3D::Triangulo3D(const Punto3D &p1, const Punto3D &p2, const Punto3D &p3){
+  this->p1 = p1;
+  this->p2 = p2;
+  this->p3 = p3;
+  normal = obtenerNormal(p1, p2, p3);
+}
+
+void Triangulo3D::dibuja() const
+{
+    dibujaTriangulo(normal, p1, p2, p3);
 }
