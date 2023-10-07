@@ -30,7 +30,7 @@
 #ifndef MODELO_H
 #define MODELO_H
 
-#include "vector3D.h"
+#include "geometria3D.h"
 
 /**
 	Funcion de redibujado. Se ejecuta con los eventos postRedisplay
@@ -59,15 +59,5 @@ class Objeto3D {
 public: 
 	virtual void draw( ) = 0; // Dibuja el objeto
 };
-
-void hacerNormal(const Vector3D &p1, const Vector3D &p2, const Vector3D &p3);
-
-Vector3D obtenerNormal(const Vector3D &p1, const Vector3D &p2, const Vector3D &p3);
-
-void dibujaTriangulo(const Vector3D &p1, const Vector3D &p2, const Vector3D &p3);
-
-void dibujaCuadrado(const Vector3D &p1, const Vector3D &p2, const Vector3D &p3, const Vector3D &p4);
-
-void dibujaCuadrado(const Vector3D &normal, Vector3D &p1, const Vector3D &p2, const Vector3D &p3, const Vector3D &p4);
 
 #endif

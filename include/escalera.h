@@ -6,7 +6,7 @@
 class Escalera : public Objeto3D{
   private:
     float lado, alto;
-    Vector3D puntos[12];
+    Punto3D puntos[12];
   public:
     Escalera(float lado, float alto);
     void draw();

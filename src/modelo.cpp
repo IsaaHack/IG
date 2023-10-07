@@ -42,54 +42,6 @@ modulo modelo.c
 #include "escalera.h"
 #include "piramide_doble_generica.h"
 
-void hacerNormal(const Vector3D &p1, const Vector3D &p2, const Vector3D &p3){
-  Vector3D normal = obtenerNormal(p1, p2, p3);
-  glNormal3f(normal.x, normal.y, normal.z);
-}
-
-Vector3D obtenerNormal(const Vector3D &p1, const Vector3D &p2, const Vector3D &p3){
-  Vector3D v1, v2, normal;
-  v1.x = p2.x - p1.x;
-  v1.y = p2.y - p1.y;
-  v1.z = p2.z - p1.z;
-  v2.x = p3.x - p1.x;
-  v2.y = p3.y - p1.y;
-  v2.z = p3.z - p1.z;
-  normal.x = v1.y * v2.z - v1.z * v2.y;
-  normal.y = v1.z * v2.x - v1.x * v2.z;
-  normal.z = v1.x * v2.y - v1.y * v2.x;
-  normal.normalizar();
-  return normal;
-}
-
-void dibujaTriangulo(const Vector3D &p1, const Vector3D &p2, const Vector3D &p3){
-  glBegin(GL_TRIANGLES);
-  {
-    hacerNormal(p1, p2, p3);
-    p1.dibuja();
-    p2.dibuja();
-    p3.dibuja();
-  }
-  glEnd();
-}
-
-void dibujaCuadrado(const Vector3D &p1, const Vector3D &p2, const Vector3D &p3, const Vector3D &p4){
-  dibujaTriangulo(p1, p2, p3);
-  dibujaTriangulo(p1, p3, p4);
-}
-
-void dibujaCuadrado(const Vector3D &normal, Vector3D &p1, const Vector3D &p2, const Vector3D &p3, const Vector3D &p4){
-  glNormal3f(normal.x, normal.y, normal.z);
-  glBegin(GL_QUADS);
-  {
-    p1.dibuja();
-    p2.dibuja();
-    p3.dibuja();
-    p4.dibuja();
-  }
-  glEnd();
-}
-
 int modo;
 bool iluminacion;
 Ejes ejesCoordenadas;

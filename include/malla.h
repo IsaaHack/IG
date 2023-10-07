@@ -14,10 +14,9 @@ private:
     vector<float> vertices;
     vector<int> caras;
     vector<float> normales;
-
-    void cargar(const char *nombre_archivo_ply);
 public:
-    Malla(const char *nombre_archivo_ply);
+    Malla() = default;
+    void cargar(const char *nombre_archivo_ply);
     void draw();
 };
 

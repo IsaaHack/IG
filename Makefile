@@ -85,8 +85,8 @@ $(EJECUTABLE): $(MODULOS)
 clean:
 	rm -f ./bin/*.o ./build/$(EJECUTABLE) ./src/*.o
 
-zip:
-	zip -r practicasIG.zip *.cpp *.h *.cc *.hh *.c *.txt *.pdf *.jpg *.png *.ply *.stl Makefile
+zip: clean
+	zip -r practicasIG.zip ./*
 
 organize:
 	mkdir -p include src build bin

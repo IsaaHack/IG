@@ -3,18 +3,18 @@
 Escalera::Escalera(float lado, float alto){
     this->lado = lado;
     this->alto = alto;
-    puntos[0] = Vector3D(0, 0, 0);
-    puntos[1] = Vector3D(lado, 0, 0);
-    puntos[2] = Vector3D(lado, 0, lado);
-    puntos[3] = Vector3D(0, 0, lado);
-    puntos[4] = Vector3D(lado, alto/2, 0);
-    puntos[5] = Vector3D(lado, alto/2, lado);
-    puntos[6] = Vector3D(lado/2, alto/2, lado);
-    puntos[7] = Vector3D(lado/2, alto/2, 0);
-    puntos[8] = Vector3D(lado/2, alto, 0);
-    puntos[9] = Vector3D(lado/2, alto, lado);
-    puntos[10] = Vector3D(0, alto, lado);
-    puntos[11] = Vector3D(0, alto, 0);
+    puntos[0] = Punto3D(0, 0, 0);
+    puntos[1] = Punto3D(lado, 0, 0);
+    puntos[2] = Punto3D(lado, 0, lado);
+    puntos[3] = Punto3D(0, 0, lado);
+    puntos[4] = Punto3D(lado, alto/2, 0);
+    puntos[5] = Punto3D(lado, alto/2, lado);
+    puntos[6] = Punto3D(lado/2, alto/2, lado);
+    puntos[7] = Punto3D(lado/2, alto/2, 0);
+    puntos[8] = Punto3D(lado/2, alto, 0);
+    puntos[9] = Punto3D(lado/2, alto, lado);
+    puntos[10] = Punto3D(0, alto, lado);
+    puntos[11] = Punto3D(0, alto, 0);
 }
 
 void Escalera::draw(){
