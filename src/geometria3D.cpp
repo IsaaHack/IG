@@ -2,10 +2,10 @@
 
 void Vector3D::normalizar(){
   GLfloat modulo = sqrt(x * x + y * y + z * z);
-  if(modulo < ERROR || modulo > -ERROR) return;
-  x /= modulo;
-  y /= modulo;
-  z /= modulo;
+  if(modulo == 0.0) return;
+    x /= modulo;
+    y /= modulo;
+    z /= modulo;
 }
 
 void Punto3D::dibuja() const{
@@ -28,6 +28,9 @@ Vector3D obtenerNormal(const Punto3D &p1, const Punto3D &p2, const Punto3D &p3){
   normal.x = v1.y * v2.z - v1.z * v2.y;
   normal.y = v1.z * v2.x - v1.x * v2.z;
   normal.z = v1.x * v2.y - v1.y * v2.x;
+  if(normal.x <= ERROR && normal.x >= ERROR) normal.x = 0.0;
+  if(normal.y <= ERROR && normal.y >= ERROR) normal.y = 0.0;
+  if(normal.z <= ERROR && normal.z >= ERROR) normal.z = 0.0;
   normal.normalizar();
   return normal;
 }

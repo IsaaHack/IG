@@ -4,7 +4,21 @@
     // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
-        
-
+        {
+            "name": "Release (Run)",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceRoot}/build/practicasIG",
+            "cwd": "${workspaceRoot}",
+            "preLaunchTask": "build",
+        },
+        {
+            "name": "Debug",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceRoot}/build/practicasIG",
+            "cwd": "${workspaceRoot}",
+            "preLaunchTask": "build",
+        }
     ]
 }

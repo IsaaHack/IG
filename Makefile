@@ -7,7 +7,8 @@
 # EJECUTABLE=  nombre del fichero ejecutable que queremos crear
 #
 
-EJECUTABLE=  practicasIG
+EXE_DIR = ./build
+EJECUTABLE=  $(EXE_DIR)/practicasIG
 
 
 #  MODULOS=  lista de nombres con los modulos que se van a 
@@ -17,10 +18,19 @@ EJECUTABLE=  practicasIG
 #
 #
 
-MODULOS = $(patsubst %.c,%.o,$(wildcard ./src/*.c)) $(patsubst %.cc,%.o,$(wildcard ./src/*.cc)) $(patsubst %.cpp,%.o,$(wildcard ./src/*.cpp))
+SRC_DIR = ./src
+BIN_DIR = ./bin
 
-#MODULOS=  $(EJECUTABLE).o entradaTeclado.o visual.o mouse.o modelo.o  file_ply_stl.o vector3D.o escalera.o cubo.o ejes.o piramide_doble_generica.o piramide.o
-#MODULOS= ./src/$(EJECUTABLE).o ./src/entradaTeclado.o ./src/visual.o ./src/mouse.o ./src/modelo.o ./src/file_ply_stl.o ./src/vector3D.o ./src/escalera.o ./src/cubo.o ./src/ejes.o ./src/piramide_doble_generica.o ./src/piramide.o ./src/malla.o
+SOURCEC = $(wildcard $(SRC_DIR)/*.c)
+SOURCECC = $(wildcard $(SRC_DIR)/*.cc)
+SOURCECPP = $(wildcard $(SRC_DIR)/*.cpp)
+SOURCES = $(SOURCEC) $(SOURCECC) $(SOURCECPP)
+
+MODULOSC = $(patsubst $(SRC_DIR)/%.c, $(BIN_DIR)/%.o, $(SOURCEC))
+MODULOSCC = $(patsubst $(SRC_DIR)/%.cc, $(BIN_DIR)/%.o, $(SOURCECC))
+MODULOSCPP = $(patsubst $(SRC_DIR)/%.cpp, $(BIN_DIR)/%.o, $(SOURCECPP))
+
+MODULOS= $(MODULOSC) $(MODULOSCC) $(MODULOSCPP)
 
 #  INCLUDEDIRS= Lista de caminos a los directorios donde se encuentran
 #              	ficheros include. Si se cambia de instalaci� es posible
@@ -47,8 +57,8 @@ LIBSDIR= /usr/X11R6/lib
 #             -c   (solo compilar cada modulo, no linkar)
 #             -I   (indicamos directiorios donde buscar los include)
 
-CFLAGS=  -g -c -DXWINDOWS  -I$(INCLUDEDIR) -I$(INCLUDEDIR2)
-CPPFLAGS=  -g -c -DXWINDOWS  -I$(INCLUDEDIR) -I$(INCLUDEDIR2)
+CFLAGS= -g -c -DXWINDOWS  -I$(INCLUDEDIR) -I$(INCLUDEDIR2)
+CPPFLAGS= -g -c -DXWINDOWS  -I$(INCLUDEDIR) -I$(INCLUDEDIR2)
        
 #  LDFLAGS= Parametros para el linkador. (ld)
 #           le decimos que busque las librerias 
@@ -79,11 +89,18 @@ CC=        g++
 
 $(EJECUTABLE): $(MODULOS)
 	$(CC) -o $(EJECUTABLE) $(LDFLAGS) $(MODULOS) $(LIBS)
-	mv $(EJECUTABLE) ./build
-	mv ./src/*.o ./bin
+
+$(BIN_DIR)/%.o: $(SRC_DIR)/%.c
+	$(CC) $(CFLAGS) $< -o $@
+
+$(BIN_DIR)/%.o: $(SRC_DIR)/%.cc
+	$(CC) $(CPPFLAGS) $< -o $@
+
+$(BIN_DIR)/%.o: $(SRC_DIR)/%.cpp
+	$(CC) $(CPPFLAGS) $< -o $@
 
 clean:
-	rm -f ./bin/*.o ./build/$(EJECUTABLE) ./src/*.o
+	rm -f $(MODULOS) $(EJECUTABLE)
 
 zip: clean
 	zip -r practicasIG.zip ./*
@@ -95,7 +112,7 @@ organize:
 	mv *.cc src
 	mv *.cpp src
 	mv *.o bin
-	mv $(EJECUTABLE) build
+	mv ./practicasIG build
 
 desorganize:
 	mv include/*.h .
