@@ -47,8 +47,8 @@ int modo;
 bool iluminacion;
 Ejes ejesCoordenadas;
 Cubo cubo(4.0);
-Piramide piramide(4.0, 4.0);
-Escalera escalera(4.0, 4.0);
+Piramide piramide(1.0, 1.0);
+Escalera escalera(1.0, 1.0);
 Piramide_doble_generica piramide_50_lados(2.0, 4.0, 50);
 ObjetoPLY beethoven;
 
@@ -63,7 +63,8 @@ void initModel()
   modo = GL_FILL;
   iluminacion = true;
   glPolygonMode(GL_FRONT_AND_BACK, modo);
-  beethoven.cargar("./plys/beethoven.ply");
+  beethoven.cargar("./plys/shark.ply");
+  beethoven.setModoSombreado(GL_FLAT);
 }
 
 void setModo(int M){
@@ -119,14 +120,13 @@ void Dibuja(void)
   // Dibuja el modelo (A rellenar en prácticas 1,2 y 3)
 
   glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, color);
-  //beethoven.setModoSombreado(GL_FLAT);
   beethoven.draw();
   /**
   cubo.draw();
-
+ 
   glTranslatef(5.0,0.0,0.0);
   glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, color2);
-  piramide.draw();
+  cubo.draw();
 
   glTranslatef(-5.0,0.0,5.0);
   glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, color3);

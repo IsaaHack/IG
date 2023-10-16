@@ -18,13 +18,14 @@ protected:
     int modo_sombreado;
 
     Punto3D getVertice(int i);
+    Triangulo3D getCara(int i);
     void setNormal(int i, const Vector3D &normal);
     void addNormal(int i, const Vector3D &normal);
     void normalizarNormales();
 public:
     virtual void cargar(const char *nombre_archivo_ply) = 0;
     virtual void setModoSombreado(int modo);
-    virtual void draw() = 0;
+    virtual void draw();
 };
 
 

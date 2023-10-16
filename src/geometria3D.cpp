@@ -18,34 +18,14 @@ void hacerNormal(const Punto3D &p1, const Punto3D &p2, const Punto3D &p3){
 }
 
 Vector3D obtenerNormal(const Punto3D &p1, const Punto3D &p2, const Punto3D &p3){
-  Vector3D v1, v2, normal;
-  v1.x = p2.x - p1.x;
-  v1.y = p2.y - p1.y;
-  v1.z = p2.z - p1.z;
-  v2.x = p3.x - p1.x;
-  v2.y = p3.y - p1.y;
-  v2.z = p3.z - p1.z;
-  normal.x = v1.y * v2.z - v1.z * v2.y;
-  normal.y = v1.z * v2.x - v1.x * v2.z;
-  normal.z = v1.x * v2.y - v1.y * v2.x;
-  if(normal.x <= ERROR && normal.x >= ERROR) normal.x = 0.0;
-  if(normal.y <= ERROR && normal.y >= ERROR) normal.y = 0.0;
-  if(normal.z <= ERROR && normal.z >= ERROR) normal.z = 0.0;
+  Vector3D normal = obtenerNormalSinNormalizar(p1, p2, p3);
   normal.normalizar();
   return normal;
 }
 
 Vector3D obtenerNormalSinNormalizar(const Punto3D &p1, const Punto3D &p2, const Punto3D &p3){
-  Vector3D v1, v2, normal;
-  v1.x = p2.x - p1.x;
-  v1.y = p2.y - p1.y;
-  v1.z = p2.z - p1.z;
-  v2.x = p3.x - p1.x;
-  v2.y = p3.y - p1.y;
-  v2.z = p3.z - p1.z;
-  normal.x = v1.y * v2.z - v1.z * v2.y;
-  normal.y = v1.z * v2.x - v1.x * v2.z;
-  normal.z = v1.x * v2.y - v1.y * v2.x;
+  Vector3D v1(p1,p2), v2(p1,p3), normal;
+  normal = v1 ^ v2;
   return normal;
 }
 
@@ -92,7 +72,7 @@ Triangulo3D::Triangulo3D(const Punto3D &p1, const Punto3D &p2, const Punto3D &p3
   this->p1 = p1;
   this->p2 = p2;
   this->p3 = p3;
-  normal = obtenerNormal(p1, p2, p3);
+  normal = obtenerNormalSinNormalizar(p1, p2, p3);
 }
 
 void Triangulo3D::dibuja() const

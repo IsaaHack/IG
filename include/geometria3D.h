@@ -36,13 +36,77 @@ public:
     y = 0;
     z = 0;
   }
-  Vector3D(Punto3D &p){
+  Vector3D(const Punto3D &p){
     x = p.x;
     y = p.y;
     z = p.z;
   }
 
+  Vector3D(const Punto3D &p1, const Punto3D &p2){
+    x = p2.x - p1.x;
+    y = p2.y - p1.y;
+    z = p2.z - p1.z;
+  }
+
   void normalizar();
+
+  Vector3D obtenerNormalizado() const{
+    Vector3D normalizado(*this);
+    normalizado.normalizar();
+    return normalizado;
+  }
+
+  Vector3D operator+(const Vector3D &v) const{
+    return Vector3D(x + v.x, y + v.y, z + v.z);
+  }
+
+  Vector3D operator-(const Vector3D &v) const{
+    return Vector3D(x - v.x, y - v.y, z - v.z);
+  }
+
+  Vector3D operator*(GLfloat k) const{
+    return Vector3D(x * k, y * k, z * k);
+  }
+
+  Vector3D operator/(GLfloat k) const{
+    return Vector3D(x / k, y / k, z / k);
+  }
+
+  Vector3D operator-() const{
+    return Vector3D(-x, -y, -z);
+  }
+
+  Vector3D operator+=(const Vector3D &v){
+    x += v.x;
+    y += v.y;
+    z += v.z;
+    return *this;
+  }
+
+  Vector3D operator-=(const Vector3D &v){
+    x -= v.x;
+    y -= v.y;
+    z -= v.z;
+    return *this;
+  }
+
+  Vector3D operator*=(GLfloat k){
+    x *= k;
+    y *= k;
+    z *= k;
+    return *this;
+  }
+
+  Vector3D operator/=(GLfloat k){
+    x /= k;
+    y /= k;
+    z /= k;
+    return *this;
+  }
+
+  Vector3D operator^(const Vector3D &v) const{
+    return Vector3D(y * v.z - z * v.y, z * v.x - x * v.z, x * v.y - y * v.x);
+  }
 
   GLfloat x, y, z;
 };
@@ -58,8 +122,24 @@ public:
     normal = Vector3D();
   }
 
+  Punto3D getP1() const{
+    return p1;
+  }
+
+  Punto3D getP2() const{
+    return p2;
+  }
+
+  Punto3D getP3() const{
+    return p3;
+  }
+
   Vector3D getNormal() const{
     return normal;
+  }
+
+  void normalizarNormal(){
+    normal.normalizar();
   }
 
   void dibuja() const;

@@ -28,7 +28,32 @@ void Malla::setNormal(int i, const Vector3D &normal){
     }
 }
 
+Triangulo3D Malla::getCara(int i)
+{
+    if(i < 0 || i >= caras.size() / 3) return Triangulo3D();
+    return Triangulo3D(getVertice(caras[i * 3]), getVertice(caras[i * 3 + 1]), getVertice(caras[i * 3 + 2]));
+}
+
 void Malla::setModoSombreado(int modo){
     if(modo == GL_FLAT || modo == GL_SMOOTH)
             modo_sombreado = modo;
+}
+
+void Malla::draw() {
+    if(modo_sombreado == GL_FLAT)
+        glShadeModel(GL_FLAT);
+    else
+        glShadeModel(GL_SMOOTH);
+
+    glEnableClientState(GL_VERTEX_ARRAY);
+    glEnableClientState(GL_NORMAL_ARRAY);
+    
+    glNormalPointer(GL_FLOAT, 0, &normales[0]);
+    glVertexPointer(3, GL_FLOAT, 0, &vertices[0]);
+
+    glDrawElements(GL_TRIANGLES, caras.size(), GL_UNSIGNED_INT, &caras[0]);
+
+    glDisableClientState(GL_VERTEX_ARRAY);
+    glDisableClientState(GL_NORMAL_ARRAY);
+    glShadeModel(GL_FLAT);
 }
