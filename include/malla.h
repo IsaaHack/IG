@@ -21,6 +21,7 @@ protected:
     Triangulo3D getCara(int i);
     void setNormal(int i, const Vector3D &normal);
     void addNormal(int i, const Vector3D &normal);
+    void calcularNormalesVertices();
     void normalizarNormales();
 public:
     virtual void cargar(const char *nombre_archivo_ply) = 0;

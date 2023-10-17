@@ -20,6 +20,20 @@ void Malla::normalizarNormales(){
     }
 }
 
+void Malla::calcularNormalesVertices(){
+    normales.resize(vertices.size(), 0);
+    
+    for(int i = 0; i < caras.size(); i += 3){
+        Vector3D normal = getCara(i / 3).getNormal();
+
+        addNormal(caras[i], normal);
+        addNormal(caras[i + 1], normal);
+        addNormal(caras[i + 2], normal);
+    }
+    
+    normalizarNormales();
+}
+
 void Malla::setNormal(int i, const Vector3D &normal){
     if(i >= 0 && i < normales.size() / 3){
         normales[i * 3] = normal.x;

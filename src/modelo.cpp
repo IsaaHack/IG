@@ -42,6 +42,7 @@ modulo modelo.c
 #include "escalera.h"
 #include "piramide_doble_generica.h"
 #include "objetoPLY.h"
+#include "objetoRevolucion.h"
 
 int modo;
 bool iluminacion;
@@ -51,6 +52,7 @@ Piramide piramide(1.0, 1.0);
 Escalera escalera(1.0, 1.0);
 Piramide_doble_generica piramide_50_lados(2.0, 4.0, 50);
 ObjetoPLY beethoven;
+ObjetoRevolucion lata;
 
 /**	void initModel()
 
@@ -64,7 +66,8 @@ void initModel()
   iluminacion = true;
   glPolygonMode(GL_FRONT_AND_BACK, modo);
   beethoven.cargar("./plys/shark.ply");
-  beethoven.setModoSombreado(GL_FLAT);
+  //beethoven.setModoSombreado(GL_FLAT);
+  lata.cargar("./plys/lata-pcue.ply");
 }
 
 void setModo(int M){
@@ -120,7 +123,7 @@ void Dibuja(void)
   // Dibuja el modelo (A rellenar en prácticas 1,2 y 3)
 
   glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, color);
-  beethoven.draw();
+  lata.draw();
   /**
   cubo.draw();
  
