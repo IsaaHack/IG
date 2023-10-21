@@ -48,6 +48,8 @@ public:
     z = p2.z - p1.z;
   }
 
+  void dibuja(const Punto3D &p, float factor=1.0) const;
+
   void normalizar();
 
   Vector3D obtenerNormalizado() const{
@@ -136,6 +138,10 @@ public:
 
   Vector3D getNormal() const{
     return normal;
+  }
+
+  Punto3D getCentro() const{
+    return Punto3D((p1.x + p2.x + p3.x) / 3, (p1.y + p2.y + p3.y) / 3, (p1.z + p2.z + p3.z) / 3);
   }
 
   void normalizarNormal(){

@@ -65,9 +65,10 @@ void initModel()
   modo = GL_FILL;
   iluminacion = true;
   glPolygonMode(GL_FRONT_AND_BACK, modo);
-  beethoven.cargar("./plys/shark.ply");
+  beethoven.cargar("./plys/beethoven.ply");
   //beethoven.setModoSombreado(GL_FLAT);
-  lata.cargar("./plys/lata-pcue.ply");
+  lata.cargar("./plys/perfil.ply", 20, true, true);
+  lata.setModoSombreado(GL_FLAT);
 }
 
 void setModo(int M){
@@ -113,7 +114,7 @@ void Dibuja(void)
 
   glLightfv(GL_LIGHT0, GL_POSITION, pos); // Declaracion de luz. Colocada aqui esta fija en la escena
 
-  ejesCoordenadas.draw(); // Dibuja los ejes
+  //ejesCoordenadas.draw(); // Dibuja los ejes
 
   if(iluminacion)
     glEnable(GL_LIGHTING);
@@ -123,7 +124,7 @@ void Dibuja(void)
   // Dibuja el modelo (A rellenar en prácticas 1,2 y 3)
 
   glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, color);
-  lata.draw();
+  lata.drawFlat(true);
   /**
   cubo.draw();
  

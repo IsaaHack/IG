@@ -37,10 +37,11 @@ void ObjetoRevolucion::calcularTriangulos(bool tapa_superior, bool tapa_inferior
     }
 
     if(tapa_superior){
-        vertices.push_back(0);
-        vertices.push_back(getVertice(0).y);
-        vertices.push_back(0);
+        float y = getVertice(0).y;
         for(int i = 0; i < precision; i++){
+            vertices.push_back(0);
+            vertices.push_back(y);
+            vertices.push_back(0);
             caras.push_back(i);
             caras.push_back(vertices.size() / 3 - 1);
             caras.push_back(((i + 1) % precision));
@@ -48,16 +49,13 @@ void ObjetoRevolucion::calcularTriangulos(bool tapa_superior, bool tapa_inferior
     }
 
     if(tapa_inferior){
-        int primer_punto_ultima_capa;
-        if(tapa_inferior)
-            primer_punto_ultima_capa = (vertices.size()-3 - (precision*3))/3;
-        else
-            primer_punto_ultima_capa = (vertices.size() - (precision*3))/3;
-
-        vertices.push_back(0);
-        vertices.push_back(getVertice(primer_punto_ultima_capa).y);
-        vertices.push_back(0);
+        int primer_punto_ultima_capa = (num_vertices_perfil - 1) * precision;
+        float y = getVertice(primer_punto_ultima_capa).y;
+        
         for(int i = 0; i < precision; i++){
+            vertices.push_back(0);
+            vertices.push_back(y);
+            vertices.push_back(0);
             caras.push_back(primer_punto_ultima_capa + ((i + 1) % precision));
             caras.push_back(vertices.size() / 3 - 1);
             caras.push_back(primer_punto_ultima_capa + i);
@@ -79,7 +77,9 @@ void ObjetoRevolucion::cargar(const char *nombre_archivo_ply, int precision, boo
     vector<float> perfil;
     ply::read_vertices(nombre_archivo_ply, perfil);
 
-    if(precision > 3 && precision < 100)
+    num_vertices_perfil = perfil.size() / 3;
+
+    if(precision >= 3 && precision < 100)
         this->precision = precision;
     else if(precision >= 100)
         this->precision = 100;
@@ -92,4 +92,9 @@ void ObjetoRevolucion::cargar(const char *nombre_archivo_ply, int precision, boo
 void ObjetoRevolucion::draw()
 {
     this->Malla::draw();
+}
+
+void ObjetoRevolucion::draw(bool draw_normales)
+{
+    this->Malla::draw(draw_normales);
 }

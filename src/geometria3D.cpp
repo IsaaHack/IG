@@ -1,8 +1,20 @@
 #include "geometria3D.h"
 
-void Vector3D::normalizar(){
-  GLfloat modulo = sqrt(x * x + y * y + z * z);
-  if(modulo == 0.0) return;
+void Vector3D::dibuja(const Punto3D &p, float factor) const
+{
+    glBegin(GL_LINES);
+    {
+        p.dibuja();
+        glVertex3f((p.x + x*factor), (p.y + y*factor), (p.z + z*factor));
+    }
+    glEnd();
+}
+
+void Vector3D::normalizar()
+{
+    GLfloat modulo = sqrt(x * x + y * y + z * z);
+    if (modulo == 0.0)
+        return;
     x /= modulo;
     y /= modulo;
     z /= modulo;
