@@ -43,6 +43,8 @@ modulo modelo.c
 #include "piramide_doble_generica.h"
 #include "objetoPLY.h"
 #include "objetoRevolucion.h"
+#include "barridoLineal.h"
+#include "geometria3D.h"
 
 int modo;
 bool iluminacion;
@@ -53,6 +55,7 @@ Escalera escalera(1.0, 1.0);
 Piramide_doble_generica piramide_50_lados(2.0, 4.0, 50);
 ObjetoPLY beethoven;
 ObjetoRevolucion lata;
+BarridoLineal barrido;
 
 /**	void initModel()
 
@@ -67,8 +70,19 @@ void initModel()
   glPolygonMode(GL_FRONT_AND_BACK, modo);
   beethoven.cargar("./plys/beethoven.ply");
   //beethoven.setModoSombreado(GL_FLAT);
-  lata.cargar("./plys/perfil.ply", 20, true, true);
+  lata.cargar("./plys/lata-pcue.ply", 10, true, true);
   lata.setModoSombreado(GL_FLAT);
+  Vector3D vector_trayectoria(1, 2, 0);
+  vector<Punto3D> trayectoria;
+  trayectoria.push_back(Punto3D(0,1,0));
+  trayectoria.push_back(Punto3D(0,2,1));
+  trayectoria.push_back(Punto3D(0,3,1));
+  trayectoria.push_back(Punto3D(0,4,1));
+  trayectoria.push_back(Punto3D(0,5,1));
+  vector_trayectoria.normalizar();
+  //barrido.cargarProbar("./plys/cuadrado.ply", Circulo3D(Punto3D(), Vector3D(0,0,1), 5, 6).getPuntos());
+  //barrido.cargar("./plys/cuadrado.ply", trayectoria);
+  //barrido.cargar("./plys/cuadrado.ply", vector_trayectoria, 3);
 }
 
 void setModo(int M){
@@ -114,7 +128,7 @@ void Dibuja(void)
 
   glLightfv(GL_LIGHT0, GL_POSITION, pos); // Declaracion de luz. Colocada aqui esta fija en la escena
 
-  //ejesCoordenadas.draw(); // Dibuja los ejes
+  ejesCoordenadas.draw(); // Dibuja los ejes
 
   if(iluminacion)
     glEnable(GL_LIGHTING);
@@ -124,7 +138,7 @@ void Dibuja(void)
   // Dibuja el modelo (A rellenar en prácticas 1,2 y 3)
 
   glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, color);
-  lata.drawFlat(true);
+  lata.drawSmooth();
   /**
   cubo.draw();
  

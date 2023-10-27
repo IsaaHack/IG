@@ -12,7 +12,7 @@ void Vector3D::dibuja(const Punto3D &p, float factor) const
 
 void Vector3D::normalizar()
 {
-    GLfloat modulo = sqrt(x * x + y * y + z * z);
+    GLfloat modulo = mod();
     if (modulo == 0.0)
         return;
     x /= modulo;
@@ -91,3 +91,56 @@ void Triangulo3D::dibuja() const
 {
     dibujaTriangulo(normal, p1, p2, p3);
 }
+
+void MatrizRotacion::set(GLfloat angulo, const Vector3D &v){
+  if(angulo == 0.0){
+    matriz[0][0] = 1;
+    matriz[0][1] = 0;
+    matriz[0][2] = 0;
+    matriz[1][0] = 0;
+    matriz[1][1] = 1;
+    matriz[1][2] = 0;
+    matriz[2][0] = 0;
+    matriz[2][1] = 0;
+    matriz[2][2] = 1;
+    return;
+  }
+  float cose = cos(angulo);
+  float icos = 1 - cose;
+  float sen = sin(angulo);
+
+  matriz[0][0] = cose + v.x * v.x * icos;
+  matriz[0][1] = v.x * v.y * icos - v.z * sen;
+  matriz[0][2] = v.x * v.z * icos + v.y * sen;
+  matriz[1][0] = v.y * v.x * icos + v.z * sen;
+  matriz[1][1] = cose + v.y * v.y * icos;
+  matriz[1][2] = v.y * v.z * icos - v.x * sen;
+  matriz[2][0] = v.z * v.x * icos - v.y * sen;
+  matriz[2][1] = v.z * v.y * icos + v.x * sen;
+  matriz[2][2] = cose + v.z * v.z * icos;
+
+}
+
+void MatrizRotacion::set(const Vector3D &v1, const Vector3D &v2){
+  if(v1 == v2){
+    set(0, Vector3D(1, 0, 0));
+    return;
+  }
+  Vector3D v = v1 ^ v2;
+  GLfloat angulo = v1.angulo_rad(v2);
+  set(angulo, v);
+}
+
+std::vector<Punto3D> Circulo3D::getPuntos() const
+{
+  std::vector<Punto3D> puntos;
+
+  for(int i = 0; i < num_puntos; i++)
+    puntos.push_back(Punto3D(radio * cos(2 * M_PI * i / (float)num_puntos), 0, radio * sin(2 * M_PI * i / (float)num_puntos)));
+    
+  puntos.push_back(puntos[0]);
+  
+  return puntos;
+  
+}
+

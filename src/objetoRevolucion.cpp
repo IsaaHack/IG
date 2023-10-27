@@ -19,6 +19,7 @@ void ObjetoRevolucion::calcularVertices(const vector<float> &perfil){
 
 void ObjetoRevolucion::calcularTriangulos(bool tapa_superior, bool tapa_inferior)
 {
+    /**
     for(int punto_inicial_capa = 0; punto_inicial_capa < vertices.size()-(precision*3); punto_inicial_capa += precision*3){//punto_inicial_capa es el primer punto de la capa actual
         for(int punto_capa = 0; punto_capa < precision; punto_capa++){//Indice dentro de una capa del punto
             int p1 = punto_inicial_capa/3 + punto_capa;
@@ -34,6 +35,41 @@ void ObjetoRevolucion::calcularTriangulos(bool tapa_superior, bool tapa_inferior
             caras.push_back(p3);
             caras.push_back(p4);
         }
+    }
+    */
+   
+
+    for(int i = 0; i < num_vertices_perfil - 1; i++){
+        int primer_punto_capa_actual = i * precision;
+        int primer_punto_capa_siguiente = primer_punto_capa_actual + precision;
+
+        for(int j = 0; j < precision - 1; j++){
+            int p1 = primer_punto_capa_actual + j;
+            int p2 = primer_punto_capa_actual + j + 1;
+            int p3 = primer_punto_capa_siguiente + j + 1;
+            int p4 = primer_punto_capa_siguiente + j;
+
+            caras.push_back(p1);
+            caras.push_back(p2);
+            caras.push_back(p3);
+
+            caras.push_back(p1);
+            caras.push_back(p3);
+            caras.push_back(p4);
+        }
+
+        int p1 = primer_punto_capa_actual + precision - 1;
+        int p2 = primer_punto_capa_actual;
+        int p3 = primer_punto_capa_siguiente;
+        int p4 = primer_punto_capa_siguiente + precision - 1;
+
+        caras.push_back(p1);
+        caras.push_back(p2);
+        caras.push_back(p3);
+
+        caras.push_back(p1);
+        caras.push_back(p3);
+        caras.push_back(p4);
     }
 
     if(tapa_superior){
