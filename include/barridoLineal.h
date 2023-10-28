@@ -30,6 +30,8 @@ class BarridoLineal : public Malla{
 
         void cargar(const char *nombre_archivo_ply, const Vector3D &vector_trayectoria, int num_instancias);
 
+        void cargar(const vector<Punto3D> objeto, const Vector3D &vector_trayectoria, int num_instancias);
+
         void cargar(const char *nombre_archivo_ply, const char *nombre_archivo_trayectoria);
 
         void draw();

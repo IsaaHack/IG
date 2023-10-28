@@ -175,17 +175,17 @@ class MatrizRotacion{
       matriz[2][2] = 1;
     }
 
-    MatrizRotacion(GLfloat angulo, const Vector3D &v){
-      set(angulo, v);
+    MatrizRotacion(GLfloat angulo, const Vector3D &eje){
+      set(angulo, eje);
     }
 
-    MatrizRotacion(const Vector3D &v1, const Vector3D &v2){
-      set(v1, v2);
+    MatrizRotacion(const Vector3D &normal, const Vector3D &direccion){
+      set(normal, direccion);
     }
 
-    void set(GLfloat angulo, const Vector3D &v);
+    void set(GLfloat angulo, const Vector3D &eje);
 
-    void set(const Vector3D &v1, const Vector3D &v2);
+    void set(const Vector3D &normal, const Vector3D &direccion);
     
     GLfloat operator[](int i) const{
       if(i < 0 || i > 8)
@@ -251,7 +251,7 @@ class Circulo3D{
 public:
   Circulo3D(const Punto3D &centro, const Vector3D &normal, GLfloat radio, int num_puntos){
     this->centro = centro;
-    this->normal = normal;
+    this->normal = normal.obtenerNormalizado();
     this->radio = radio;
     this->num_puntos = num_puntos;
   }

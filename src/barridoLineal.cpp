@@ -74,10 +74,6 @@ void BarridoLineal::calcularTrayectoria(const vector<Vector3D> &trayectoria, con
         p.z += trayectoria[i].z;
     }
 
-    for(int i = 1; i < this->trayectoria.size(); i++){
-        MatrizRotacion m(trayectoria[i-1], trayectoria[i]);
-        this->trayectoria[i] = m * this->trayectoria[i];
-    }
 }
 
 void BarridoLineal::calcularVertices(const vector<float> &objeto, const Vector3D &normal_objeto)
@@ -96,28 +92,27 @@ void BarridoLineal::calcularVertices(const vector<float> &objeto, const Vector3D
     }
 
     normal = vectores_trayectoria[0];
-
     Vector3D v(trayectoria[0], trayectoria[1]);
-    //v.normalizar();
+
     for(int i = 1; i < vectores_trayectoria.size(); i++){
-        Vector3D dir = vectores_trayectoria[i-1];
-        MatrizRotacion m(normal, dir);
+        Vector3D dir = vectores_trayectoria[i];
+        m.set(normal, dir);
 
         for(int j = 0; j < objeto.size(); j += 3){
             Punto3D p = Punto3D(getVertice(num_vertices_objeto*(i-1) + j/3));
-            p = m * p;
+            
             p.x += v.x;
             p.y += v.y;
             p.z += v.z;
+
+            p = m * p;
             
             vertices.push_back(p.x);
             vertices.push_back(p.y);
             vertices.push_back(p.z);
-
-            printf("Vertice %d: (%f, %f, %f)\n", num_vertices_objeto*(i) + j/3, p.x, p.y, p.z);
         }
 
-        v = Vector3D(trayectoria[i], trayectoria[i + 1]);
+        v = Vector3D(trayectoria[i-1], trayectoria[i]);
 
         normal = dir;
     }
@@ -236,7 +231,7 @@ void BarridoLineal::cargar(const char *nombre_archivo_ply, const vector<Punto3D>
 
     calcularTrayectoria(calcularVectoresTrayectoria(trayectoria), centro);
     //this->trayectoria = trayectoria;
-    this->num_vertices_trayectoria = trayectoria.size();
+    this->num_vertices_trayectoria = this->trayectoria.size();
 
     calcularVertices(objeto, normal);
     calcularTriangulos();
@@ -263,10 +258,13 @@ void BarridoLineal::cargarProbar(const char *nombre_archivo_ply, const vector<Pu
 
         for(int j = 0; j < objeto.size(); j += 3){
             Punto3D p = Punto3D(objeto[j], objeto[j + 1], objeto[j + 2]);
-            p = m * p;
+            
             p.x += v.x;
             p.y += v.y;
             p.z += v.z;
+
+            p = m * p;
+            
             vertices.push_back(p.x);
             vertices.push_back(p.y);
             vertices.push_back(p.z);
@@ -278,6 +276,7 @@ void BarridoLineal::cargarProbar(const char *nombre_archivo_ply, const vector<Pu
 
         centro = calcularCentro(objeto);
         this->trayectoria.push_back(centro);
+        normal = obtenerNormalObjeto(objeto);
         normal = dir;
         v = Vector3D(trayectoria[i], trayectoria[i + 1]);
     }
@@ -313,6 +312,33 @@ void BarridoLineal::cargar(const char *nombre_archivo_ply, const Vector3D &vecto
     this->num_vertices_trayectoria = trayectoria.size();
 
     calcularVertices(objeto, normal);
+    calcularTriangulos();
+    calcularNormalesVertices();
+}
+
+void BarridoLineal::cargar(const vector<Punto3D> objeto, const Vector3D &vector_trayectoria, int num_instancias)
+{
+    this->num_vertices_objeto = objeto.size();
+
+    vector<float> objeto_floats;
+    for(int i = 0; i < objeto.size(); i++){
+        objeto_floats.push_back(objeto[i].x);
+        objeto_floats.push_back(objeto[i].y);
+        objeto_floats.push_back(objeto[i].z);
+    }
+
+    Punto3D centro = calcularCentro(objeto_floats);
+    Vector3D normal = obtenerNormal(objeto[0], objeto[1], objeto[2]);
+
+    MatrizRotacion m(normal, vector_trayectoria);
+
+    centro = m * centro;
+
+    calcularTrayectoria(vector_trayectoria, centro, num_instancias);
+
+    this->num_vertices_trayectoria = trayectoria.size();
+
+    calcularVertices(objeto_floats, normal);
     calcularTriangulos();
     calcularNormalesVertices();
 }

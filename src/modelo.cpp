@@ -53,9 +53,9 @@ Cubo cubo(4.0);
 Piramide piramide(1.0, 1.0);
 Escalera escalera(1.0, 1.0);
 Piramide_doble_generica piramide_50_lados(2.0, 4.0, 50);
-ObjetoPLY beethoven;
-ObjetoRevolucion lata;
-BarridoLineal barrido;
+ObjetoPLY beethoven, huesos;
+ObjetoRevolucion peon, lata;
+BarridoLineal cilindro, barrido;
 
 /**	void initModel()
 
@@ -69,20 +69,16 @@ void initModel()
   iluminacion = true;
   glPolygonMode(GL_FRONT_AND_BACK, modo);
   beethoven.cargar("./plys/beethoven.ply");
-  //beethoven.setModoSombreado(GL_FLAT);
-  lata.cargar("./plys/lata-pcue.ply", 10, true, true);
-  lata.setModoSombreado(GL_FLAT);
-  Vector3D vector_trayectoria(1, 2, 0);
-  vector<Punto3D> trayectoria;
-  trayectoria.push_back(Punto3D(0,1,0));
-  trayectoria.push_back(Punto3D(0,2,1));
-  trayectoria.push_back(Punto3D(0,3,1));
-  trayectoria.push_back(Punto3D(0,4,1));
-  trayectoria.push_back(Punto3D(0,5,1));
+  huesos.cargar("./plys/footbones.ply");
+  lata.cargar("./plys/lata-pcue.ply", 100, true, true);
+  peon.cargar("./plys/perfil.ply", 100, true, true);
+  Vector3D vector_trayectoria(0, 1, 0);
+  Vector3D vector_trayectoria2(1, 0, 0);
   vector_trayectoria.normalizar();
+  Circulo3D circulo(Punto3D(), Vector3D(-1,0,0), 0.5, 100);
+  cilindro.cargar(circulo.getPuntos(), vector_trayectoria, 2);
   //barrido.cargarProbar("./plys/cuadrado.ply", Circulo3D(Punto3D(), Vector3D(0,0,1), 5, 6).getPuntos());
-  //barrido.cargar("./plys/cuadrado.ply", trayectoria);
-  //barrido.cargar("./plys/cuadrado.ply", vector_trayectoria, 3);
+  barrido.cargar("./plys/cuadrado.ply", vector_trayectoria2, 3);
 }
 
 void setModo(int M){
@@ -113,10 +109,12 @@ void Dibuja(void)
 {
   static GLfloat pos[4] = {5.0, 5.0, 10.0, 0.0}; // Posicion de la fuente de luz
 
-  float color[4] = {0.8, 0.0, 1, 1};
-  float color2[4] = {1, 0.1, 0.3, 1};
+  float color[4] = {0.8, 0.0, 0.1, 1};
+  float color2[4] = {1, 0.5, 0.3, 1};
   float color3[4] = {0.1, 0.4, 0.8, 1};
-  float color4[4] = {0.1, 0.8, 0.2, 1};
+  float color4[4] = {1, 1, 1, 1};
+  float color5[4] = {0.1, 0.8, 0.2, 1};
+  float color6[4] = {0.8, 0.8, 0.1, 1};
 
   glPushMatrix(); // Apila la transformacion geometrica actual
 
@@ -138,22 +136,27 @@ void Dibuja(void)
   // Dibuja el modelo (A rellenar en prácticas 1,2 y 3)
 
   glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, color);
-  lata.drawSmooth();
-  /**
-  cubo.draw();
+  beethoven.drawFlat();
  
-  glTranslatef(5.0,0.0,0.0);
+  glTranslatef(3.0,0.0,0.0);
   glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, color2);
-  cubo.draw();
+  lata.drawSmooth();
 
-  glTranslatef(-5.0,0.0,5.0);
+  glTranslatef(-6.0,0.0,3.0);
   glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, color3);
-  escalera.draw();
+  peon.drawFlat();
 
-  glTranslatef(5.0,0.0,0.0);
   glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, color4);
-  piramide_50_lados.draw();
-  */
+  glTranslatef(10,0.0,0.0);
+  huesos.drawSmooth();
+
+  glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, color5);
+  glTranslatef(-7,0.0,1.0);
+  cilindro.drawFlat();
+
+  glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, color6);
+  glTranslatef(0,0.0,2);
+  barrido.drawFlat();
 
   glPopMatrix(); // Desapila la transformacion geometrica
 

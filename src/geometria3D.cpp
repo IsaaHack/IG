@@ -2,22 +2,22 @@
 
 void Vector3D::dibuja(const Punto3D &p, float factor) const
 {
-    glBegin(GL_LINES);
-    {
-        p.dibuja();
-        glVertex3f((p.x + x*factor), (p.y + y*factor), (p.z + z*factor));
-    }
-    glEnd();
+  glBegin(GL_LINES);
+  {
+      p.dibuja();
+      glVertex3f((p.x + x*factor), (p.y + y*factor), (p.z + z*factor));
+  }
+  glEnd();
 }
 
 void Vector3D::normalizar()
 {
-    GLfloat modulo = mod();
-    if (modulo == 0.0)
-        return;
-    x /= modulo;
-    y /= modulo;
-    z /= modulo;
+  GLfloat modulo = mod();
+  if (modulo == 0.0)
+      return;
+  x /= modulo;
+  y /= modulo;
+  z /= modulo;
 }
 
 void Punto3D::dibuja() const{
@@ -92,7 +92,7 @@ void Triangulo3D::dibuja() const
     dibujaTriangulo(normal, p1, p2, p3);
 }
 
-void MatrizRotacion::set(GLfloat angulo, const Vector3D &v){
+void MatrizRotacion::set(GLfloat angulo, const Vector3D &eje){
   if(angulo == 0.0){
     matriz[0][0] = 1;
     matriz[0][1] = 0;
@@ -109,34 +109,39 @@ void MatrizRotacion::set(GLfloat angulo, const Vector3D &v){
   float icos = 1 - cose;
   float sen = sin(angulo);
 
-  matriz[0][0] = cose + v.x * v.x * icos;
-  matriz[0][1] = v.x * v.y * icos - v.z * sen;
-  matriz[0][2] = v.x * v.z * icos + v.y * sen;
-  matriz[1][0] = v.y * v.x * icos + v.z * sen;
-  matriz[1][1] = cose + v.y * v.y * icos;
-  matriz[1][2] = v.y * v.z * icos - v.x * sen;
-  matriz[2][0] = v.z * v.x * icos - v.y * sen;
-  matriz[2][1] = v.z * v.y * icos + v.x * sen;
-  matriz[2][2] = cose + v.z * v.z * icos;
+  matriz[0][0] = cose + eje.x * eje.x * icos;
+  matriz[0][1] = eje.x * eje.y * icos - eje.z * sen;
+  matriz[0][2] = eje.x * eje.z * icos + eje.y * sen;
+  matriz[1][0] = eje.y * eje.x * icos + eje.z * sen;
+  matriz[1][1] = cose + eje.y * eje.y * icos;
+  matriz[1][2] = eje.y * eje.z * icos - eje.x * sen;
+  matriz[2][0] = eje.z * eje.x * icos - eje.y * sen;
+  matriz[2][1] = eje.z * eje.y * icos + eje.x * sen;
+  matriz[2][2] = cose + eje.z * eje.z * icos;
 
 }
 
-void MatrizRotacion::set(const Vector3D &v1, const Vector3D &v2){
-  if(v1 == v2){
+void MatrizRotacion::set(const Vector3D &normal, const Vector3D &direccion){
+  if(normal == direccion){
     set(0, Vector3D(1, 0, 0));
     return;
   }
-  Vector3D v = v1 ^ v2;
-  GLfloat angulo = v1.angulo_rad(v2);
-  set(angulo, v);
+  Vector3D axis = normal ^ direccion;
+  GLfloat angulo = normal.angulo_rad(direccion);
+  set(angulo, axis);
 }
 
 std::vector<Punto3D> Circulo3D::getPuntos() const
 {
   std::vector<Punto3D> puntos;
 
-  for(int i = 0; i < num_puntos; i++)
-    puntos.push_back(Punto3D(radio * cos(2 * M_PI * i / (float)num_puntos), 0, radio * sin(2 * M_PI * i / (float)num_puntos)));
+  MatrizRotacion matriz_rotacion(Vector3D(0, 1, 0), normal);
+
+  for(int i = 0; i < num_puntos; i++){
+    Punto3D p(centro.x + radio * cos(2 * M_PI * i / (float)num_puntos), centro.y, centro.z + radio * sin(2 * M_PI * i / (float)num_puntos));
+    p = matriz_rotacion * p;
+    puntos.push_back(p);
+  }
     
   puntos.push_back(puntos[0]);
   
