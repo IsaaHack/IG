@@ -32,3 +32,6 @@
 #include  "entradaTeclado.h"
 #include  "visual.h"
 #include  "file_ply_stl.h"
+
+#define SPIN 1
+#define LOAD 2

@@ -37,8 +37,6 @@ modulo visual.c
 #include "practicasIG.h"
 
 
-
-
 //================================================ VARIABLES  
 
 /**

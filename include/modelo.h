@@ -45,7 +45,7 @@ void idle (int v);
 /**
 	Funcion de inicializacion del modelo y de las variables globales
 **/
-void initModel ();
+void initModel (int modo_ejec, char *ruta_ply);
 
 /**
 	Funcion de inicializacion del modo de visualizacion

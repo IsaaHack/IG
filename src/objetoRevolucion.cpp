@@ -106,7 +106,7 @@ ObjetoRevolucion::ObjetoRevolucion()
 }
 
 void ObjetoRevolucion::cargar(const char *nombre_archivo_ply){
-    cargar(nombre_archivo_ply, 50, true);
+    cargar(nombre_archivo_ply, 50, true, true);
 }
 
 void ObjetoRevolucion::cargar(const char *nombre_archivo_ply, int precision, bool tapa_superior, bool tapa_inferior){
