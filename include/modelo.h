@@ -55,6 +55,9 @@ void setModo(int M);
 /** Interruptor de la iluminación*/
 void switchIluminacion();
 
+/** Interruptor de las normales*/
+void switchNormales();
+
 class Objeto3D { 
 public: 
 	virtual void draw( ) = 0; // Dibuja el objeto

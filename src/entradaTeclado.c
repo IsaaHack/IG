@@ -55,6 +55,7 @@ void printHelp()
   printf("l, L: Modo de visualización en lineas\n");
   printf("f, F: Modo de visualización en relleno\n");
   printf("i, I: Activa/desactiva iluminación\n");
+  printf("n, N: Activa/desactiva normales\n");
   //Final
   printf("\n Escape: Salir");
   printf("\n\n\n");
@@ -102,6 +103,10 @@ void letra(unsigned char k, int x, int y)
   case 'i':
   case 'I':
     switchIluminacion();
+    break;
+  case 'n':
+  case 'N':
+    switchNormales();
     break;
   case 'h':
   case 'H':

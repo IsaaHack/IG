@@ -1,6 +1,6 @@
 #include "malla.h"
 
-Punto3D Malla::getVertice(int i){
+Punto3D Malla::getVertice(int i) const{
     return Punto3D(vertices[i * 3], vertices[i * 3 + 1], vertices[i * 3 + 2]);
 }
 
@@ -12,7 +12,7 @@ void Malla::addNormal(int i, const Vector3D &normal){
     }
 }
 
-Vector3D Malla::getNormal(int i)
+Vector3D Malla::getNormal(int i) const
 {
     if(i < 0 || i >= normales.size() / 3) return Vector3D();
     return Vector3D(normales[i * 3], normales[i * 3 + 1], normales[i * 3 + 2]);
@@ -48,7 +48,7 @@ void Malla::setNormal(int i, const Vector3D &normal){
     }
 }
 
-Triangulo3D Malla::getCara(int i)
+Triangulo3D Malla::getCara(int i) const
 {
     if(i < 0 || i >= caras.size() / 3) return Triangulo3D();
     return Triangulo3D(getVertice(caras[i * 3]), getVertice(caras[i * 3 + 1]), getVertice(caras[i * 3 + 2]));
@@ -59,7 +59,7 @@ void Malla::setModoSombreado(int modo){
             modo_sombreado = modo;
 }
 
-void Malla::drawNormalesVertices()
+void Malla::drawNormalesVertices() const
 {
     for(int i = 0; i < normales.size(); i += 3){
         float c = 0.5;
@@ -72,7 +72,7 @@ void Malla::drawNormalesVertices()
     }
 }
 
-void Malla::drawNormalesCaras()
+void Malla::drawNormalesCaras() const
 {
     for(int i = 0; i < caras.size(); i += 3){
         float c = 0.5;
@@ -87,6 +87,13 @@ void Malla::drawNormalesCaras()
         }
         glEnd();
     }
+}
+
+void Malla::clear()
+{
+    vertices.clear();
+    caras.clear();
+    normales.clear();
 }
 
 void Malla::draw() {

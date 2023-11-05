@@ -47,7 +47,7 @@ modulo modelo.c
 #include "geometria3D.h"
 
 int modo, modo_ejecucion;
-bool iluminacion;
+bool iluminacion, normales;
 Ejes ejesCoordenadas;
 Cubo cubo(4.0);
 Piramide piramide(1.0, 1.0);
@@ -67,6 +67,7 @@ void initModel(int modo_ejec, char *ruta_ply)
 {
   modo = GL_FILL;
   iluminacion = true;
+  normales = false;
   glPolygonMode(GL_FRONT_AND_BACK, modo);
   modo_ejecucion = modo_ejec;
 
@@ -103,6 +104,17 @@ void switchIluminacion(){
       iluminacion = false;
     }else{
       iluminacion = true;
+    }
+    glutPostRedisplay();
+  }
+}
+
+void switchNormales(){
+  if(modo == GL_FILL){
+    if(normales){
+      normales = false;
+    }else{
+      normales = true;
     }
     glutPostRedisplay();
   }
@@ -145,33 +157,33 @@ void Dibuja(void)
 
   if(modo_ejecucion == SPIN){
     glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, color);
-    objeto_spin.drawFlat();
+    objeto_spin.drawSmooth(normales);
   }else if(modo_ejecucion == LOAD){
     glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, color);
-    objeto_load.drawSmooth();
+    objeto_load.drawSmooth(normales);
   }else{
     glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, color);
-    beethoven.drawFlat();
+    beethoven.drawFlat(normales);
   
     glTranslatef(3.0,0.0,0.0);
     glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, color2);
-    lata.drawSmooth();
+    lata.drawSmooth(normales);
 
     glTranslatef(-6.0,0.0,3.0);
     glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, color3);
-    peon.drawFlat();
+    peon.drawFlat(normales);
 
     glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, color4);
     glTranslatef(10,0.0,0.0);
-    huesos.drawSmooth();
+    huesos.drawSmooth(normales);
 
     glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, color5);
     glTranslatef(-7,0.0,1.0);
-    cilindro.drawFlat();
+    cilindro.drawFlat(normales);
 
     glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, color6);
     glTranslatef(0,0.0,2);
-    barrido.drawFlat();
+    barrido.drawFlat(normales);
   }
 
   glPopMatrix(); // Desapila la transformacion geometrica

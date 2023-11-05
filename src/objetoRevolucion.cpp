@@ -19,26 +19,6 @@ void ObjetoRevolucion::calcularVertices(const vector<float> &perfil){
 
 void ObjetoRevolucion::calcularTriangulos(bool tapa_superior, bool tapa_inferior)
 {
-    /**
-    for(int punto_inicial_capa = 0; punto_inicial_capa < vertices.size()-(precision*3); punto_inicial_capa += precision*3){//punto_inicial_capa es el primer punto de la capa actual
-        for(int punto_capa = 0; punto_capa < precision; punto_capa++){//Indice dentro de una capa del punto
-            int p1 = punto_inicial_capa/3 + punto_capa;
-            int p2 = punto_inicial_capa/3 + (punto_capa + 1) % precision;
-            int p3 = punto_inicial_capa/3 + (punto_capa + 1) % precision + precision;
-            int p4 = punto_inicial_capa/3 + punto_capa + precision;
-
-            caras.push_back(p1);
-            caras.push_back(p2);
-            caras.push_back(p3);
-
-            caras.push_back(p1);
-            caras.push_back(p3);
-            caras.push_back(p4);
-        }
-    }
-    */
-   
-
     for(int i = 0; i < num_vertices_perfil - 1; i++){
         int primer_punto_capa_actual = i * precision;
         int primer_punto_capa_siguiente = primer_punto_capa_actual + precision;
@@ -72,30 +52,52 @@ void ObjetoRevolucion::calcularTriangulos(bool tapa_superior, bool tapa_inferior
         caras.push_back(p4);
     }
 
-    if(tapa_superior){
+    if(tapa_superior && Punto3D(0, getVertice(0).y, 0) != getVertice(0)){
         float y = getVertice(0).y;
+        vertices.push_back(0);
+        vertices.push_back(y);
+        vertices.push_back(0);
+
         for(int i = 0; i < precision; i++){
-            vertices.push_back(0);
-            vertices.push_back(y);
-            vertices.push_back(0);
             caras.push_back(i);
             caras.push_back(vertices.size() / 3 - 1);
             caras.push_back(((i + 1) % precision));
         }
     }
 
-    if(tapa_inferior){
-        int primer_punto_ultima_capa = (num_vertices_perfil - 1) * precision;
+    int primer_punto_ultima_capa = (num_vertices_perfil - 1) * precision;
+    if(tapa_inferior && Punto3D(0, getVertice(primer_punto_ultima_capa).y, 0) != getVertice(primer_punto_ultima_capa)){
         float y = getVertice(primer_punto_ultima_capa).y;
+        vertices.push_back(0);
+        vertices.push_back(y);
+        vertices.push_back(0);
         
         for(int i = 0; i < precision; i++){
-            vertices.push_back(0);
-            vertices.push_back(y);
-            vertices.push_back(0);
             caras.push_back(primer_punto_ultima_capa + ((i + 1) % precision));
             caras.push_back(vertices.size() / 3 - 1);
             caras.push_back(primer_punto_ultima_capa + i);
         }
+    }
+}
+
+void ObjetoRevolucion::verificarPerfil(vector<float> &perfil) const
+{
+    Vector3D dir_perfil;
+    bool inicializado = false;
+    for(int i = 0; i < perfil.size(); i += 3){
+        Vector3D v(perfil[i], 0, perfil[i + 2]);
+
+        if(!inicializado){
+            if(v != Vector3D()){
+                dir_perfil = v.obtenerNormalizado();
+                inicializado = true;
+            }
+        }else if(dir_perfil != v.obtenerNormalizado()){
+            v = dir_perfil * v.mod();
+            perfil[i] = v.x;
+            perfil[i + 2] = v.z;
+        }
+            
     }
 }
 
@@ -106,10 +108,11 @@ ObjetoRevolucion::ObjetoRevolucion()
 }
 
 void ObjetoRevolucion::cargar(const char *nombre_archivo_ply){
-    cargar(nombre_archivo_ply, 50, true, true);
+    cargar(nombre_archivo_ply, 100, true, true);
 }
 
 void ObjetoRevolucion::cargar(const char *nombre_archivo_ply, int precision, bool tapa_superior, bool tapa_inferior){
+    clear();
     vector<float> perfil;
     ply::read_vertices(nombre_archivo_ply, perfil);
 
@@ -119,7 +122,9 @@ void ObjetoRevolucion::cargar(const char *nombre_archivo_ply, int precision, boo
         this->precision = precision;
     else if(precision >= 100)
         this->precision = 100;
-    
+
+
+    verificarPerfil(perfil);
     calcularVertices(perfil);
     calcularTriangulos(tapa_superior, tapa_inferior);
     Malla::calcularNormalesVertices();

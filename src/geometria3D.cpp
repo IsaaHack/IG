@@ -1,5 +1,41 @@
 #include "geometria3D.h"
 
+Punto3D::Punto3D(GLfloat x, GLfloat y, GLfloat z)
+{
+  this->x = x;
+  this->y = y;
+  this->z = z;
+}
+
+Punto3D::Punto3D()
+{
+  x = 0;
+  y = 0;
+  z = 0;
+}
+
+Punto3D::Punto3D(const Punto3D &p)
+{
+  x = p.x;
+  y = p.y;
+  z = p.z;
+}
+
+void Punto3D::dibuja() const
+{
+  glVertex3f(x, y, z);
+}
+
+bool Punto3D::operator==(const Punto3D &p) const
+{
+  return fabs(x - p.x) < ERROR && fabs(y - p.y) < ERROR && fabs(z - p.z) < ERROR;
+}
+
+bool Punto3D::operator!=(const Punto3D &p) const
+{
+  return !(*this == p);
+}
+
 void Vector3D::dibuja(const Punto3D &p, float factor) const
 {
   glBegin(GL_LINES);
@@ -18,10 +54,6 @@ void Vector3D::normalizar()
   x /= modulo;
   y /= modulo;
   z /= modulo;
-}
-
-void Punto3D::dibuja() const{
-    glVertex3f(x, y, z);
 }
 
 void hacerNormal(const Punto3D &p1, const Punto3D &p2, const Punto3D &p3){

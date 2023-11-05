@@ -8,32 +8,62 @@
 
 #define ERROR 0.00001
 
+/**
+ * @brief Clase que representa un punto en 3D
+ * @details Un punto en 3D se representa mediante sus coordenadas x, y, z
+*/
 class Punto3D{
 public:
-  Punto3D(GLfloat x, GLfloat y, GLfloat z){
-    this->x = x;
-    this->y = y;
-    this->z = z;
-  }
-  Punto3D(){
-    x = 0;
-    y = 0;
-    z = 0;
-  }
+  /**
+   * @brief Constructor por parámetros
+   * @param x Coordenada x
+   * @param y Coordenada y
+   * @param z Coordenada z
+  */
+  Punto3D(GLfloat x, GLfloat y, GLfloat z);
+
+  /**
+   * @brief Constructor por defecto
+   * @post Crea un punto en el origen
+  */
+  Punto3D();
+
+  /**
+   * @brief Constructor de copia
+   * @param p Punto a copiar
+   * @post Crea un punto igual a p
+  */
+  Punto3D(const Punto3D &p);
   
+  /**
+   * @brief Dibuja el punto
+   * @post El punto no es modificado
+  */
   void dibuja() const;
 
-  bool operator==(const Punto3D &p) const{
-    return fabs(x - p.x) < ERROR && fabs(y - p.y) < ERROR && fabs(z - p.z) < ERROR;
-  }
+  /**
+   * @brief Compara dos puntos
+   * @param p Punto con el que se compara
+   * @return true si los puntos son iguales, false en caso contrario
+   * @post Los puntos no son modificados
+  */
+  bool operator==(const Punto3D &p) const;
 
-  bool operator!=(const Punto3D &p) const{
-    return !(*this == p);
-  }
+  /**
+   * @brief Compara dos puntos
+   * @param p Punto con el que se compara
+   * @return true si los puntos son distintos, false en caso contrario
+   * @post Los puntos no son modificados
+  */
+  bool operator!=(const Punto3D &p) const;
 
-  GLfloat x, y, z;
+  GLfloat x, y, z; // Coordenadas del punto
 };
 
+/**
+ * @brief Clase que representa un vector en 3D
+ * @details Un vector en 3D se representa mediante sus coordenadas x, y, z
+*/
 class Vector3D{
 public:
   Vector3D(GLfloat x, GLfloat y, GLfloat z){

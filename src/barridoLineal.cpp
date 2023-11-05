@@ -127,8 +127,6 @@ void BarridoLineal::calcularVertices(const vector<float> &objeto, const Vector3D
         vertices.push_back(p.z);
     }
 
-    
-
     vertices.push_back(trayectoria[0].x);
     vertices.push_back(trayectoria[0].y);
     vertices.push_back(trayectoria[0].z);
