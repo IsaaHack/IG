@@ -1,23 +1,9 @@
-#include "tranformaciones.h"
-
-Rotacion* Rotacion::instancia = nullptr;
+#include "transformaciones.h"
 
 Rotacion::Rotacion()
 {
     eje = Vector3D(0, 0, 0);
     angulo = 0;
-}
-
-Rotacion::~Rotacion()
-{
-    delete instancia;
-}
-
-Rotacion *Rotacion::getInstancia()
-{
-    if (instancia == NULL)
-        instancia = new Rotacion();
-    return instancia;
 }
 
 void Rotacion::aplicar()
@@ -51,23 +37,9 @@ float Rotacion::getAngulo()
     return angulo;
 }
 
-Traslacion* Traslacion::instancia = nullptr;
-
 Traslacion::Traslacion()
 {
     vector_traslacion = Vector3D(0, 0, 0);
-}
-
-Traslacion::~Traslacion()
-{
-    delete instancia;
-}
-
-Traslacion *Traslacion::getInstancia()
-{
-    if (instancia == nullptr)
-        instancia = new Traslacion();
-    return instancia;
 }
 
 void Traslacion::aplicar()
@@ -80,23 +52,14 @@ void Traslacion::set(const Vector3D &vector_traslacion)
     this->vector_traslacion = vector_traslacion;
 }
 
-Escalado* Escalado::instancia = nullptr;
+Vector3D Traslacion::getVectorTraslacion()
+{
+    return vector_traslacion;
+}
 
 Escalado::Escalado()
 {
     vector_escalado = Vector3D(0, 0, 0);
-}
-
-Escalado::~Escalado()
-{
-    delete instancia;
-}
-
-Escalado *Escalado::getInstancia()
-{
-    if (instancia == nullptr)
-        instancia = new Escalado();
-    return instancia;
 }
 
 void Escalado::aplicar()

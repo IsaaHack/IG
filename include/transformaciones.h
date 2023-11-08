@@ -1,62 +1,55 @@
-#ifndef TRASNFORMACIONES_H
-#define TRASNFORMACIONES_H
+#ifndef TRANSFORMACIONES_H
+#define TRANSFORMACIONES_H
 
 #include <GL/glut.h>
 #include <geometria3D.h>
+#include "modelo.h"
 
-class Trasformacion{
+class Transformacion : public Objeto3D{
 public:
     virtual void aplicar() = 0;
+    virtual void draw() = 0;
 };
 
-class Rotacion : public Trasformacion{
+class Rotacion : public Transformacion{
 private:
-    static Rotacion* instancia;
-
     Vector3D eje;
     float angulo;
-
-    Rotacion();
-    ~Rotacion();
-    
 public:
-    static Rotacion* getInstancia();
+    Rotacion();
+    Rotacion(const Vector3D &eje, float angulo);
     void aplicar();
     void set(const Vector3D &eje, float angulo);
     void setEje(const Vector3D &eje);
     void setAngulo(float angulo);
     Vector3D getEje();
     float getAngulo();
+    void draw(){};
 };
 
-class Traslacion : public Trasformacion{
+class Traslacion : public Transformacion{
 private:
-    static Traslacion* instancia;
-
     Vector3D vector_traslacion;
-
-    Traslacion();
-    ~Traslacion();
 public:
-    static Traslacion* getInstancia();
+    Traslacion();
+    Traslacion(const Vector3D &vector_traslacion);
     void aplicar();
     void set(const Vector3D &vector_traslacion);
     Vector3D getVectorTraslacion();
+    void draw(){};
 };
 
-class Escalado : public Trasformacion{
+class Escalado : public Transformacion{
 private:
-    static Escalado *instancia;
-
     Vector3D vector_escalado;
-
-    Escalado();
-    ~Escalado();
+    
 public:
-    static Escalado *getInstancia();
+    Escalado();
+    Escalado(const Vector3D &vector_escalado);
     void aplicar();
     void set(const Vector3D &vector_escalado);
     Vector3D getVectorEscalado();
+    void draw(){};
 };
 
 #endif
