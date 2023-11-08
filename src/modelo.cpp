@@ -157,7 +157,7 @@ void Dibuja(void)
 
   if(modo_ejecucion == SPIN){
     glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, color);
-    objeto_spin.drawSmooth(normales);
+    objeto_spin.drawFlat(normales);
   }else if(modo_ejecucion == LOAD){
     glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, color);
     objeto_load.drawSmooth(normales);
