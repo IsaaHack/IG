@@ -1,12 +1,22 @@
 #include "nodo.h"
 
-Nodo::~Nodo()
+Nodo::~Nodo() = default;
+/**
 {
-    for(auto &objeto : nodos_hijos){
-        if(dynamic_cast<Transformacion*>(objeto) != nullptr)
-            delete dynamic_cast<Transformacion*>(objeto);
+    
+    for(auto nuevo : nuevos){
+        if(dynamic_cast<Rotacion*>(nuevo) != nullptr){
+            delete dynamic_cast<Rotacion*>(nuevo);
+        }else if(dynamic_cast<Traslacion*>(nuevo) != nullptr){
+            delete dynamic_cast<Traslacion*>(nuevo);
+        }else if(dynamic_cast<Escalado*>(nuevo) != nullptr){
+            delete dynamic_cast<Escalado*>(nuevo);
+        }
     }
+    
+
 }
+*/
 
 void Nodo::aplicar()
 {
@@ -33,20 +43,31 @@ void Nodo::addTransformacion(Transformacion *transformacion)
 
 void Nodo::addTransladacion(const Vector3D &vector_traslacion)
 {
-    nodos_hijos.push_back(new Traslacion(vector_traslacion));
+    Traslacion *traslacion = new Traslacion(vector_traslacion);
+    nuevos.push_back(traslacion);
+    nodos_hijos.push_back(nuevos.back());
 }
 
 void Nodo::addRotacion(const Vector3D &eje, float angulo)
 {
-    nodos_hijos.push_back(new Rotacion(eje, angulo));
+    Rotacion *rotacion = new Rotacion(eje, angulo);
+    nuevos.push_back(rotacion);
+    nodos_hijos.push_back(nuevos.back());
 }
 
 void Nodo::addEscalado(const Vector3D &vector_escalado)
 {
-    nodos_hijos.push_back(new Escalado(vector_escalado));
+    Escalado *escalado = new Escalado(vector_escalado);
+    nuevos.push_back(escalado);
+    nodos_hijos.push_back(nuevos.back());
 }
 
 void Nodo::addNodo(Nodo *nodo)
 {
     nodos_hijos.push_back(nodo);
+}
+
+void Nodo::clear()
+{
+    nodos_hijos.clear();
 }

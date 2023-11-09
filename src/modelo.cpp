@@ -45,6 +45,7 @@ modulo modelo.c
 #include "objetoRevolucion.h"
 #include "barridoLineal.h"
 #include "geometria3D.h"
+#include "aspas.h"
 
 int modo, modo_ejecucion;
 bool iluminacion, normales;
@@ -56,6 +57,9 @@ Piramide_doble_generica piramide_50_lados(2.0, 4.0, 50);
 ObjetoPLY beethoven, huesos, objeto_load;
 ObjetoRevolucion peon, lata, objeto_spin;
 BarridoLineal cilindro, barrido;
+float giro_x = 0, giro_y = 0;
+Aspas aspas(&giro_x, &giro_y);
+bool sentido = true;
 
 /**	void initModel()
 
@@ -185,6 +189,21 @@ void Dibuja(void)
     glTranslatef(0,0.0,2);
     barrido.drawFlat(normales);
   }
+
+  glTranslatef(0.0,0.0, 2);
+  if(giro_y > 45){
+    sentido = false;
+  }else if(giro_y < -45){
+    sentido = true;
+  }
+
+  if(sentido){
+    giro_y += 0.5;
+  }else{
+    giro_y -= 0.5;
+  }
+  giro_x += 2;
+  aspas.draw();
 
   glPopMatrix(); // Desapila la transformacion geometrica
 

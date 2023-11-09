@@ -9,6 +9,9 @@ private:
   int lado;
 
 public:
+  Cubo(){
+    lado = 1;
+  }
   Cubo(float lado){
     this->lado = lado;
   }

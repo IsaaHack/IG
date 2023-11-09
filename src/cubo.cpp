@@ -38,15 +38,4 @@ void Cubo::draw()
       glVertex3f(0, y, 0);
     }
     glEnd();
-
-    Punto3D pico(x / 2, y*2, z / 2);
-    Punto3D p1(x, y, z);
-    Punto3D p2(0, y, z);
-    Punto3D p3(0, y, 0);
-    Punto3D p4(x, y, 0);
-
-    dibujaTriangulo(pico, p2, p1);
-    dibujaTriangulo(pico, p3, p2);
-    dibujaTriangulo(pico, p4, p3);
-    dibujaTriangulo(pico, p1, p4);
   }

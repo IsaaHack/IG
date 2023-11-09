@@ -9,7 +9,7 @@
 class Nodo : public Transformacion{
 private:
     std::vector<Objeto3D *> nodos_hijos;
-
+    std::vector<Transformacion *> nuevos;
 public:
     Nodo() = default;
     ~Nodo();
@@ -22,6 +22,8 @@ public:
     void addEscalado(const Vector3D &vector_escalado);
     void addNodo(Nodo *nodo);
     void draw(){};
+    
+    void clear();
 };
 
 #endif

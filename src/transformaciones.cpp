@@ -6,6 +6,12 @@ Rotacion::Rotacion()
     angulo = 0;
 }
 
+Rotacion::Rotacion(const Vector3D &eje, float angulo)
+{
+    this->eje = eje;
+    this->angulo = angulo;
+}
+
 void Rotacion::aplicar()
 {
     glRotatef(angulo, eje.x, eje.y, eje.z);
@@ -42,6 +48,11 @@ Traslacion::Traslacion()
     vector_traslacion = Vector3D(0, 0, 0);
 }
 
+Traslacion::Traslacion(const Vector3D &vector_traslacion)
+{
+    this->vector_traslacion = vector_traslacion;
+}
+
 void Traslacion::aplicar()
 {
     glTranslatef(vector_traslacion.x, vector_traslacion.y, vector_traslacion.z);
@@ -60,6 +71,11 @@ Vector3D Traslacion::getVectorTraslacion()
 Escalado::Escalado()
 {
     vector_escalado = Vector3D(0, 0, 0);
+}
+
+Escalado::Escalado(const Vector3D &vector_escalado)
+{
+    this->vector_escalado = vector_escalado;
 }
 
 void Escalado::aplicar()
