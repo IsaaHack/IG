@@ -30,8 +30,6 @@
 #ifndef MODELO_H
 #define MODELO_H
 
-#include "geometria3D.h"
-
 /**
 	Funcion de redibujado. Se ejecuta con los eventos postRedisplay
 **/
@@ -57,10 +55,5 @@ void switchIluminacion();
 
 /** Interruptor de las normales*/
 void switchNormales();
-
-class Objeto3D { 
-public: 
-	virtual void draw( ) = 0; // Dibuja el objeto
-};
 
 #endif

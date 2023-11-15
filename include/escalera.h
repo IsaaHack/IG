@@ -1,7 +1,7 @@
 #ifndef ESCALERA_H
 #define ESCALERA_H
 
-#include "modelo.h"
+#include "objeto3D.h"
 
 class Escalera : public Objeto3D{
   private:

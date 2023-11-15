@@ -46,6 +46,7 @@ modulo modelo.c
 #include "barridoLineal.h"
 #include "geometria3D.h"
 #include "aspas.h"
+#include "helicoptero.h"
 
 int modo, modo_ejecucion;
 bool iluminacion, normales;
@@ -60,6 +61,8 @@ BarridoLineal cilindro, barrido;
 float giro_x = 0, giro_y = 0;
 Aspas aspas(&giro_x, &giro_y);
 bool sentido = true;
+Helicoptero helicoptero(30);
+
 
 /**	void initModel()
 
@@ -80,6 +83,7 @@ void initModel(int modo_ejec, char *ruta_ply)
   }else if(modo_ejecucion == SPIN){// Cargo el objeto de revolución que entra por parámetro
     objeto_spin.cargar(ruta_ply);
   }else{// Inicializamos los objetos de la escena
+    helicoptero.cargar("./plys/heli.ply", "./plys/helices.ply");
     beethoven.cargar("./plys/beethoven.ply");
     huesos.cargar("./plys/footbones.ply");
     lata.cargar("./plys/lata-pcue.ply", 100, true, true);
@@ -166,31 +170,8 @@ void Dibuja(void)
     glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, color);
     objeto_load.drawSmooth(normales);
   }else{
-    glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, color);
-    beethoven.drawFlat(normales);
-  
-    glTranslatef(3.0,0.0,0.0);
-    glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, color2);
-    lata.drawSmooth(normales);
-
-    glTranslatef(-6.0,0.0,3.0);
-    glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, color3);
-    peon.drawFlat(normales);
-
-    glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, color4);
-    glTranslatef(10,0.0,0.0);
-    huesos.drawSmooth(normales);
-
-    glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, color5);
-    glTranslatef(-7,0.0,1.0);
-    cilindro.drawFlat(normales);
-
-    glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, color6);
-    glTranslatef(0,0.0,2);
-    barrido.drawFlat(normales);
+    
   }
-
-  glTranslatef(0.0,0.0, 2);
   if(giro_y > 45){
     sentido = false;
   }else if(giro_y < -45){
@@ -203,7 +184,7 @@ void Dibuja(void)
     giro_y -= 0.5;
   }
   giro_x += 2;
-  aspas.draw();
+  helicoptero.draw();
 
   glPopMatrix(); // Desapila la transformacion geometrica
 

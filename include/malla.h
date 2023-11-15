@@ -1,7 +1,7 @@
 #ifndef MALLA_H
 #define MALLA_H
 
-#include "modelo.h"
+#include "objeto3D.h"
 #include "file_ply_stl.h"
 #include "GL/glut.h"
 #include <vector>

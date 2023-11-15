@@ -2,7 +2,7 @@
 #define EJES_H
 
 #include "GL/glut.h"
-#include "modelo.h"
+#include "objeto3D.h"
 
 class Ejes : public Objeto3D{
 public:

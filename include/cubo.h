@@ -2,7 +2,7 @@
 #define CUBO_H
 
 #include <GL/glut.h>
-#include "modelo.h"
+#include "objeto3D.h"
 
 class Cubo : public Objeto3D{
 private:

@@ -6,13 +6,19 @@ Rotacion::Rotacion()
     angulo = 0;
 }
 
+Rotacion::Rotacion(const Rotacion &rotacion)
+{
+    this->eje = rotacion.eje;
+    this->angulo = rotacion.angulo;
+}
+
 Rotacion::Rotacion(const Vector3D &eje, float angulo)
 {
     this->eje = eje;
     this->angulo = angulo;
 }
 
-void Rotacion::aplicar()
+void Rotacion::draw()
 {
     glRotatef(angulo, eje.x, eje.y, eje.z);
 }
@@ -53,7 +59,12 @@ Traslacion::Traslacion(const Vector3D &vector_traslacion)
     this->vector_traslacion = vector_traslacion;
 }
 
-void Traslacion::aplicar()
+Traslacion::Traslacion(const Traslacion &traslacion)
+{
+    this->vector_traslacion = traslacion.vector_traslacion;
+}
+
+void Traslacion::draw()
 {
     glTranslatef(vector_traslacion.x, vector_traslacion.y, vector_traslacion.z);
 }
@@ -78,7 +89,7 @@ Escalado::Escalado(const Vector3D &vector_escalado)
     this->vector_escalado = vector_escalado;
 }
 
-void Escalado::aplicar()
+void Escalado::draw()
 {
     glScalef(vector_escalado.x, vector_escalado.y, vector_escalado.z);
 }

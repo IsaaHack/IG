@@ -1,7 +1,7 @@
 #ifndef PIRAMIDE_H
 #define PIRAMIDE_H
 
-#include "modelo.h"
+#include "objeto3D.h"
 
 class Piramide : public Objeto3D{
   private:

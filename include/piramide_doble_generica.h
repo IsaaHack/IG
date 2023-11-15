@@ -1,7 +1,7 @@
 #ifndef PIRAMIDEDOBLEGENERICA_H
 #define PIRAMIDEDOBLEGENERICA_H
 
-#include "modelo.h"
+#include "objeto3D.h"
 
 class Piramide_doble_generica :public Objeto3D{
   private:
