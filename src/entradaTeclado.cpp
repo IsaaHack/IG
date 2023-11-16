@@ -32,6 +32,7 @@ modulo entradaTeclado.c
 #include <math.h>
 #include <GL/glut.h> // Libreria de utilidades de OpenGL
 #include "practicasIG.h"
+#include "helicoptero.h"
 
 /**
 
@@ -88,6 +89,37 @@ void letra(unsigned char k, int x, int y)
 
   switch (k)
   {
+  case 'w':
+  case 'W':
+    getControlador()->irAlante();
+    break;
+  case 's':
+  case 'S':
+    getControlador()->irAtras();
+    break;
+  case 'a':
+  case 'A':
+    getControlador()->alabeoIzquierda();
+    break;
+  case 'd':
+  case 'D':
+    getControlador()->alabeoDerecha();
+    break;
+  case 'q':
+  case 'Q':
+    getControlador()->giroIzquierda();
+    break;
+  case 'e':
+  case 'E':
+    getControlador()->giroDerecha();
+    break;
+  case ' ':
+    getControlador()->subirHelicoptero();
+    break;
+  case 'c':
+  case 'C':
+    getControlador()->bajarHelicoptero();
+    break;
   case 'p':
   case 'P':
     setModo(GL_POINT);

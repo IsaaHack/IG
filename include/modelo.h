@@ -30,6 +30,8 @@
 #ifndef MODELO_H
 #define MODELO_H
 
+#include "helicoptero.h"
+
 /**
 	Funcion de redibujado. Se ejecuta con los eventos postRedisplay
 **/
@@ -55,5 +57,8 @@ void switchIluminacion();
 
 /** Interruptor de las normales*/
 void switchNormales();
+
+/**Funcion que */
+ControladorHelicoptero* getControlador();
 
 #endif

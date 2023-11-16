@@ -23,6 +23,7 @@ protected:
     vector<int> caras; // Vector de caras
     vector<float> normales; // Vector de normales de vertices
     int modo_sombreado; // Modo de sombreado
+    Punto3D punto_pivote; // Punto pivote
 
     /**
      * @brief Obtiene el vértice i-ésimo
@@ -139,6 +140,12 @@ public:
      * @post El objeto no es modificado
     */
     virtual void drawFlat(bool draw_normales = false);
+
+    void setPuntoPivote(const Punto3D &punto_pivote);
+
+    Punto3D getPuntoPivote() const;
+
+    void calcularPuntoPivote();
 };
 
 

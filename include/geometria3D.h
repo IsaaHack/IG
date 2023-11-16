@@ -34,6 +34,12 @@ public:
    * @post Crea un punto igual a p
   */
   Punto3D(const Punto3D &p);
+
+  /**
+   * @brief Destructor
+   * @post Destruye el punto
+  */
+  ~Punto3D() = default;
   
   /**
    * @brief Dibuja el punto
@@ -188,6 +194,10 @@ public:
 
   GLfloat x, y, z;
 };
+
+const Vector3D ejex(1, 0, 0);
+const Vector3D ejey(0, 1, 0);
+const Vector3D ejez(0, 0, 1);
 
 class MatrizRotacion{
   private:

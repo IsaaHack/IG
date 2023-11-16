@@ -167,3 +167,32 @@ void Malla::drawFlat(bool draw_normales)
 
     if(draw_normales) drawNormalesCaras();
 }
+
+void Malla::setPuntoPivote(const Punto3D &punto_pivote)
+{
+    this->punto_pivote = punto_pivote;
+}
+
+Punto3D Malla::getPuntoPivote() const
+{
+    return punto_pivote;
+}
+
+void Malla::calcularPuntoPivote(){
+    Punto3D min, max;
+    min.x = min.y = min.z = 1000000;
+    max.x = max.y = max.z = -1000000;
+
+    for(int i = 0; i < vertices.size(); i += 3){
+        if(vertices[i] < min.x) min.x = vertices[i];
+        if(vertices[i] > max.x) max.x = vertices[i];
+        if(vertices[i + 1] < min.y) min.y = vertices[i + 1];
+        if(vertices[i + 1] > max.y) max.y = vertices[i + 1];
+        if(vertices[i + 2] < min.z) min.z = vertices[i + 2];
+        if(vertices[i + 2] > max.z) max.z = vertices[i + 2];
+    }
+
+    punto_pivote.x = (min.x + max.x) / 2;
+    punto_pivote.y = (min.y + max.y) / 2;
+    punto_pivote.z = (min.z + max.z) / 2;
+}

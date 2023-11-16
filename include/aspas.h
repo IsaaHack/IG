@@ -6,10 +6,6 @@
 #include <cubo.h>
 #include <nodo.h>
 
-const Vector3D ejex(1, 0, 0);
-const Vector3D ejey(0, 1, 0);
-const Vector3D ejez(0, 0, 1);
-
 class Aspas : public Objeto3D{
 private:
         Cubo cubo;

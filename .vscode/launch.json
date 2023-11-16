@@ -17,7 +17,6 @@
             "type": "cppdbg",
             "request": "launch",
             "program": "${workspaceRoot}/build/practicasIG",
-            "args": ["--spin", "./plys/000-benchmark/perfil-2.ply"],
             "cwd": "${workspaceRoot}",
             "preLaunchTask": "build",
         }

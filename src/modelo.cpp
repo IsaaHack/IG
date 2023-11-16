@@ -37,31 +37,20 @@ modulo modelo.c
 #include "practicasIG.h"
 #include "modelo.h"
 #include "ejes.h"
-#include "cubo.h"
-#include "piramide.h"
-#include "escalera.h"
-#include "piramide_doble_generica.h"
 #include "objetoPLY.h"
 #include "objetoRevolucion.h"
-#include "barridoLineal.h"
-#include "geometria3D.h"
-#include "aspas.h"
 #include "helicoptero.h"
+#include "aspas.h"
 
 int modo, modo_ejecucion;
 bool iluminacion, normales;
 Ejes ejesCoordenadas;
-Cubo cubo(4.0);
-Piramide piramide(1.0, 1.0);
-Escalera escalera(1.0, 1.0);
-Piramide_doble_generica piramide_50_lados(2.0, 4.0, 50);
-ObjetoPLY beethoven, huesos, objeto_load;
-ObjetoRevolucion peon, lata, objeto_spin;
-BarridoLineal cilindro, barrido;
-float giro_x = 0, giro_y = 0;
-Aspas aspas(&giro_x, &giro_y);
-bool sentido = true;
-Helicoptero helicoptero(30);
+ObjetoPLY objeto_load;
+ObjetoRevolucion objeto_spin;
+Helicoptero helicoptero;
+ControladorHelicoptero* controlador = helicoptero.getControlador();
+float giro_x_actual, giro_y_actual;
+Aspas aspas(&giro_x_actual, &giro_y_actual);
 
 
 /**	void initModel()
@@ -84,18 +73,10 @@ void initModel(int modo_ejec, char *ruta_ply)
     objeto_spin.cargar(ruta_ply);
   }else{// Inicializamos los objetos de la escena
     helicoptero.cargar("./plys/heli.ply", "./plys/helices.ply");
-    beethoven.cargar("./plys/beethoven.ply");
-    huesos.cargar("./plys/footbones.ply");
-    lata.cargar("./plys/lata-pcue.ply", 100, true, true);
-    peon.cargar("./plys/perfil.ply", 100, true, true);
-    Vector3D vector_trayectoria(0, 1, 0);
-    Vector3D vector_trayectoria2(1, 0, 0);
-    vector_trayectoria.normalizar();
-    Circulo3D circulo(Punto3D(), Vector3D(-1,0,0), 0.5, 100);
-    cilindro.cargar(circulo.getPuntos(), vector_trayectoria, 2);
-    //barrido.cargarProbar("./plys/cuadrado.ply", Circulo3D(Punto3D(), Vector3D(0,0,1), 5, 6).getPuntos());
-    barrido.cargar("./plys/cuadrado.ply", vector_trayectoria2, 3);
   }
+
+  giro_x_actual = 0;
+  giro_y_actual = 0;
 }
 
 void setModo(int M){
@@ -126,6 +107,10 @@ void switchNormales(){
     }
     glutPostRedisplay();
   }
+}
+
+ControladorHelicoptero* getControlador(){
+  return controlador;
 }
 
 /**	void Dibuja( void )
@@ -163,28 +148,16 @@ void Dibuja(void)
 
   // Dibuja el modelo (A rellenar en prácticas 1,2 y 3)
 
+  glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, color);
+
   if(modo_ejecucion == SPIN){
-    glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, color);
     objeto_spin.drawFlat(normales);
   }else if(modo_ejecucion == LOAD){
-    glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, color);
     objeto_load.drawSmooth(normales);
   }else{
-    
+    helicoptero.draw();
+    controlador->actualizar();
   }
-  if(giro_y > 45){
-    sentido = false;
-  }else if(giro_y < -45){
-    sentido = true;
-  }
-
-  if(sentido){
-    giro_y += 0.5;
-  }else{
-    giro_y -= 0.5;
-  }
-  giro_x += 2;
-  helicoptero.draw();
 
   glPopMatrix(); // Desapila la transformacion geometrica
 
