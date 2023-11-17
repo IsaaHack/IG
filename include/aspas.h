@@ -4,14 +4,17 @@
 #include <objeto3D.h>
 #include <transformaciones.h>
 #include <cubo.h>
-#include <nodo.h>
+
+#define ANGULO_MAXIMO 45.0
+
+//IMPORTANTE: Las animaciones estan atadas a los FPS, por lo que si se cambian los FPS, se cambia la velocidad de las animaciones
 
 class Aspas : public Objeto3D{
 private:
         Cubo cubo;
         
-        Nodo a, b, c;
-        Nodo molino, cabeza, b_, aspas, aspa;
+        Objeto3D a, b, c;
+        Objeto3D molino, cabeza, b_, aspas, aspa;
 
         Rotacion ry, rx;
 
@@ -19,12 +22,14 @@ private:
         static Traslacion t1, t2, t3, t4, t5;
         static Escalado s_a, s_b, s_c;
 
-        float *giro_x, *giro_y;
+        float giro_x, giro_y;
+        float velocidad_cabeza, velocidad_aspas;
+        bool sentido;
 
         void actualizar();
     public:
         Aspas();
-        Aspas(float *giro_x, float *giro_y);
+        Aspas(float velocidad_cabeza, float velocidad_aspas);
         virtual void draw();
 };
 

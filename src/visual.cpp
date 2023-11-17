@@ -35,6 +35,7 @@ modulo visual.c
 #include <math.h>
 #include <GL/glut.h>		// Libreria de utilidades de OpenGL
 #include "practicasIG.h"
+#include "visual.h"
 
 
 //================================================ VARIABLES  
@@ -46,6 +47,8 @@ Angulos de rotacion de la camara.
 **/
 
 float view_rotx = 30, view_roty = 45;
+float view_rotx2 = 45, view_roty2 = 90;
+float x_camara2 = 0, y_camara2 = 0, z_camara2 = 0;
 
 
 /**
@@ -82,6 +85,21 @@ void setCamara (float ax, float ay, float d)
   D = d;
 }
 
+void setCamara2 (float ax, float ay, float d)
+{
+  view_rotx2 = ax;
+  view_roty2 = ay;
+
+  D = d;
+}
+
+void cambiarCoordenadasCamara2(float x, float y, float z)
+{
+  x_camara2 = x;
+  y_camara2 = y;
+  z_camara2 = z;
+}
+
 
 /** 	void transformacionVisualizacion()
 
@@ -102,11 +120,33 @@ void transformacionVisualizacion ()
   // glTranslatef(-x_camara,-y_camara,-z_camara);
 }
 
-/**	void fijaProyeccion()
+void transformaciónVisualizacion2(float az)
+{
+  float angle_y = (view_roty2 + az) * M_PI / 180.0;  // Ángulo de rotación alrededor del eje y en radianes
+  float angle_x = view_rotx2 * M_PI / 180.0;  // Ángulo de rotación alrededor del eje z en radianes
 
-Fija la transformacion de proyeccion en funcion del tamaño de la ventana y del tipo de proyeccion
+  float camera_x = x_camara2 + D * cos(angle_x) * sin(angle_y);
+  float camera_y = y_camara2 + D * sin(angle_x);
+  float camera_z = z_camara2 - D * cos(angle_x) * cos(angle_y);
 
-**/
+  // Configura la matriz de vista usando gluLookAt
+  gluLookAt(camera_x, camera_y, camera_z,  // Posición de la cámara
+            x_camara2, y_camara2, z_camara2,  // Punto al que está mirando
+            0.0f, 1.0f, 0.0f);  // Vector de orientación
+  
+
+  //glTranslatef(x_camara2, y_camara2, z_camara2);
+  //glRotatef(az+view_roty2,0.0,1.0,0.0);
+  //glRotatef(view_rotx2,0.0,0.0,1.0); // no funca
+  //glTranslatef(-x_camara2, -y_camara2, -z_camara2);
+  
+}
+
+ /**	void fijaProyeccion()
+
+ Fija la transformacion de proyeccion en funcion del tamaño de la ventana y del tipo de proyeccion
+
+ **/
 void fijaProyeccion ()
 {
   float calto;			// altura de la ventana corregida

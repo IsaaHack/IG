@@ -38,7 +38,9 @@ Cambia los parámetros de la cámara en el modulo visual
 
 **/
 void setCamara (float ax, float ay, float d);
+void setCamara2 (float ax, float ay, float d);
 
+void cambiarCoordenadasCamara2(float x, float y, float z);
 
 
 /** 	void transformacionVisualizacion()
@@ -48,6 +50,8 @@ view_roty y view_rotz y el desplazamiento de la camara d.
 
 **/
 void transformacionVisualizacion ();
+
+void transformaciónVisualizacion2(float az);
 
 /**	void fijaProyeccion()
 

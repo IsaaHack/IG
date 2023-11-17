@@ -1,6 +1,7 @@
 #include "aspas.h"
 #include <iostream>
 
+
 Rotacion Aspas::r1 = Rotacion(ejez, -90);
 Rotacion Aspas::r2 = Rotacion(ejey, -20);
 Rotacion Aspas::r3 = Rotacion(ejey, 40);
@@ -18,18 +19,31 @@ Escalado Aspas::s_c = Escalado(Vector3D(2, 6, 1));
 
 Aspas::Aspas()
 {
-    cubo = Cubo(1);
-
-    giro_x = nullptr;
-    giro_y = nullptr;
+    *this = Aspas(5, 10);
 }
 
-Aspas::Aspas(float *giro_x, float *giro_y)
+Aspas::Aspas(float velocidad_cabeza, float velocidad_aspas)
 {
     cubo = Cubo(1);
 
-    rx.set(ejex, *giro_x);
-    ry.set(ejey, *giro_y);
+    giro_x = 0;
+    giro_y = 0;
+
+    if(velocidad_cabeza < 0)
+    {
+        sentido = false;
+        velocidad_cabeza = -velocidad_cabeza;
+    }
+    else
+    {
+        sentido = true;
+    }
+
+    this->velocidad_cabeza = velocidad_cabeza;
+    this->velocidad_aspas = velocidad_aspas;
+
+    rx.set(ejex, giro_x);
+    ry.set(ejey, giro_y);
 
     a.addHijo(&s_a);
     a.addHijo(&cubo);
@@ -63,21 +77,32 @@ Aspas::Aspas(float *giro_x, float *giro_y)
     aspa.addHijo(&r4);
     aspa.addHijo(&t5);
     aspa.addHijo(&c);
-
-    this->giro_x = giro_x;
-    this->giro_y = giro_y;
 }
 
+//IMPORTANTE: Las animaciones estan atadas a los FPS, por lo que si se cambian los FPS, se cambia la velocidad de las animaciones
 void Aspas::actualizar()
 {
-    if (giro_x != nullptr)
-    {
-        rx.set(ejex, *giro_x);
-    }
-    if (giro_y != nullptr)
-    {
-        ry.set(ejey, *giro_y);
-    }
+
+    if(sentido)
+        giro_y += velocidad_cabeza;
+    else
+        giro_y -= velocidad_cabeza;
+
+    giro_x += velocidad_aspas;
+
+    if(giro_x > 360)
+        giro_x -= 360;
+    else if(giro_x < 0)
+        giro_x += 360;
+    
+
+    if(giro_y >= ANGULO_MAXIMO)
+        sentido = false;
+    else if(giro_y <= -ANGULO_MAXIMO)
+        sentido = true;
+
+    rx.set(ejex, giro_x);
+    ry.set(ejey, giro_y);
 }
 
 void Aspas::draw()

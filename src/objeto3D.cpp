@@ -2,11 +2,6 @@
 
 using namespace std;
 
-Objeto3D::~Objeto3D()
-{
-    clear();
-}
-
 void Objeto3D::addHijo(Objeto3D *objeto)
 {
     hijos.push_back(objeto);
@@ -17,15 +12,11 @@ void Objeto3D::clear()
     hijos.clear();
 }
 
-void Objeto3D::recorrerArbol()
+void Objeto3D::draw()
 {
-
     glPushMatrix();
-    draw();
-    for (auto hijo : hijos)
-    {
-        hijo->recorrerArbol();
+    for(auto &hijo : hijos){
+        hijo->draw();
     }
-    
     glPopMatrix();
 }

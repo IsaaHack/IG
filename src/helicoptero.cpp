@@ -94,6 +94,7 @@ float Helicoptero::calcularVelocidadDescenso() {
 
 void Helicoptero::actualizar()
 {
+    //IMPORTANTE: Las animaciones estan atadas a los FPS, por lo que si se cambian los FPS, se cambia la velocidad de las animaciones
     if(controlador.getSubir()){
         if(velocidad_helice < VELOCIDAD_MAXIMA_HELICE)
             velocidad_helice += 1;
@@ -184,7 +185,7 @@ void Helicoptero::actualizar()
 
 void Helicoptero::draw()
 {
-    actualizar();
+    //actualizar();
     helicoptero.draw();
 }
 

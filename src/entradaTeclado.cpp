@@ -82,6 +82,7 @@ y:
 **/
 
 float rotxCamara = 30, rotyCamara = 45;
+float rotxCamara2 = 45, rotyCamara2 = -90;
 float dCamara = 10;
 
 void letra(unsigned char k, int x, int y)
@@ -140,6 +141,10 @@ void letra(unsigned char k, int x, int y)
   case 'N':
     switchNormales();
     break;
+  case 'v':
+  case 'V':
+    cambiarCamara();
+    break;
   case 'h':
   case 'H':
     printHelp(); // H y h imprimen ayuda
@@ -155,7 +160,9 @@ void letra(unsigned char k, int x, int y)
   default:
     return;
   }
-  setCamara(rotxCamara, rotyCamara, dCamara);
+  if(getCamara() == 0)
+    setCamara(rotxCamara, rotyCamara, dCamara);
+  else setCamara2(rotxCamara2, rotyCamara2, dCamara);
   glutPostRedisplay(); // Algunas de las opciones cambian paramentros
 } // de la camara. Es necesario actualziar la imagen
 
@@ -178,24 +185,48 @@ void especial(int k, int x, int y)
   switch (k)
   {
   case GLUT_KEY_UP:
-    rotxCamara += 5.0; // Cursor arriba + rotacion x
-    if (rotxCamara > 360)
-      rotxCamara -= 360;
+    if(getCamara() == 0){
+      rotxCamara += 5.0; // Cursor arriba + rotacion x
+      if (rotxCamara > 360)
+        rotxCamara -= 360;
+    }else{
+      rotxCamara2 += 5.0; // Cursor arriba + rotacion x
+      if (rotxCamara2 > 360)
+        rotxCamara2 -= 360;
+    }
     break;
   case GLUT_KEY_DOWN:
-    rotxCamara -= 5.0;
-    if (rotxCamara < 0)
-      rotxCamara += 360;
+    if(getCamara() == 0)
+      rotxCamara -= 5.0; // Cursor abajo - rotacion x
+      if (rotxCamara < 0)
+        rotxCamara += 360;
+    else{
+      rotxCamara2 -= 5.0; // Cursor abajo - rotacion x
+      if (rotxCamara2 < 0)
+        rotxCamara2 += 360;
+    }
     break;
   case GLUT_KEY_LEFT:
-    rotyCamara += 5.0;
-    if (rotyCamara > 360)
-      rotyCamara -= 360;
+    if(getCamara() == 0){
+      rotyCamara += 5.0; // Cursor izquierda + rotacion y
+      if (rotyCamara > 360)
+        rotyCamara -= 360;
+    }else{
+      rotyCamara2 += 5.0; // Cursor izquierda + rotacion y
+      if (rotyCamara2 > 360)
+        rotyCamara2 -= 360;
+    }
     break;
   case GLUT_KEY_RIGHT:
-    rotyCamara -= 5.0;
-    if (rotyCamara < 0)
-      rotyCamara += 360;
+    if(getCamara() == 0){
+      rotyCamara -= 5.0; // Cursor derecha - rotacion y
+      if (rotyCamara < 0)
+        rotyCamara += 360;
+    }else{
+      rotyCamara2 -= 5.0; // Cursor derecha - rotacion y
+      if (rotyCamara2 < 0)
+        rotyCamara2 += 360;
+    }
     break;
   case GLUT_KEY_PAGE_DOWN: // acerca la cámara
     dCamara -= 5.0;
@@ -206,6 +237,14 @@ void especial(int k, int x, int y)
   default:
     return;
   }
-  setCamara(rotxCamara, rotyCamara, dCamara);
+
+  if(rotxCamara2 == 90)
+    rotxCamara2 = 85;
+  else if(rotxCamara2 == 270)
+    rotxCamara2 = 275;
+
+  if(getCamara() == 0)
+    setCamara(rotxCamara, rotyCamara, dCamara);
+  else setCamara2(rotxCamara2, rotyCamara2, dCamara);
   glutPostRedisplay(); // Actualiza la imagen (ver proc. letra)
 }

@@ -66,7 +66,7 @@ class ObjetoRevolucion : public Malla{
         /**
          * @brief Dibuja el objeto con el modo de dibujado actual
         */
-        void draw();
+        virtual void draw();
 
         /**
          * @brief Dibuja el objeto con el modo de dibujado actual

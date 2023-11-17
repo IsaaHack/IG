@@ -34,7 +34,7 @@ class BarridoLineal : public Malla{
 
         void cargar(const char *nombre_archivo_ply, const char *nombre_archivo_trayectoria);
 
-        void draw();
+        virtual void draw();
 };
 
 

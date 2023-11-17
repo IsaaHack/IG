@@ -61,4 +61,8 @@ void switchNormales();
 /**Funcion que */
 ControladorHelicoptero* getControlador();
 
+void cambiarCamara();
+
+int getCamara();
+
 #endif

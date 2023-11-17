@@ -4,7 +4,6 @@
 #include <objeto3D.h>
 #include <transformaciones.h>
 #include <objetoPLY.h>
-#include <nodo.h>
 
 const float VELOCIDAD_MAXIMA_ASCENSO = 1.0;
 const float VELOCIDAD_MAXIMA_DESCENSO = -1.0;
@@ -44,20 +43,21 @@ class ControladorHelicoptero{
         void actualizar();
 };
 
-class Helicoptero : public Malla{
+//IMPORTANTE: Las animaciones estan atadas a los FPS, por lo que si se cambian los FPS, se cambia la velocidad de las animaciones
+
+class Helicoptero : public Objeto3D{
 private:
         ObjetoPLY cuerpo, helice;
         
-        Nodo helicoptero, cab, col, rot, asp;
+        Objeto3D helicoptero, col, asp;
 
         ControladorHelicoptero controlador;
 
         Rotacion ry, r_helice, r_cabeceo, r_alabeo, r_giro;
+        Traslacion posicion;
         
         Rotacion r1;
-        Traslacion t1, t2, posicion;
-
-        
+        Traslacion t1, t2;
 
         float heli_x, heli_y, heli_z;
         float giro_helice, velocidad_helice;
@@ -67,13 +67,15 @@ private:
 
         float calcularVelocidadAscenso();
         float calcularVelocidadDescenso();
-        void actualizar();
     public:
         Helicoptero();
         void cargar(const char *ply);
         void cargar(const char *ply_cuerpo, const char *ply_helice);
 
         ControladorHelicoptero* getControlador(){return &controlador;}
+        Punto3D getPosicion() const {return Punto3D(heli_x, heli_y, heli_z);}
+        float getGiroHelicoptero() const {return giro_giro;}
+        void actualizar();
 
         virtual void draw();
 };

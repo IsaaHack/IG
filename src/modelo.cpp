@@ -41,6 +41,7 @@ modulo modelo.c
 #include "objetoRevolucion.h"
 #include "helicoptero.h"
 #include "aspas.h"
+#include "suelo.h"
 
 int modo, modo_ejecucion;
 bool iluminacion, normales;
@@ -49,8 +50,9 @@ ObjetoPLY objeto_load;
 ObjetoRevolucion objeto_spin;
 Helicoptero helicoptero;
 ControladorHelicoptero* controlador = helicoptero.getControlador();
-float giro_x_actual, giro_y_actual;
-Aspas aspas(&giro_x_actual, &giro_y_actual);
+Aspas aspas(3.0,10.0);
+Suelo suelo;
+int camara = 0;
 
 
 /**	void initModel()
@@ -75,8 +77,7 @@ void initModel(int modo_ejec, char *ruta_ply)
     helicoptero.cargar("./plys/heli.ply", "./plys/helices.ply");
   }
 
-  giro_x_actual = 0;
-  giro_y_actual = 0;
+  camara = 0;
 }
 
 void setModo(int M){
@@ -113,6 +114,19 @@ ControladorHelicoptero* getControlador(){
   return controlador;
 }
 
+void cambiarCamara(){
+  if(camara == 0){
+    camara = 1;
+  }else{
+    camara = 0;
+  }
+  glutPostRedisplay();
+}
+
+int getCamara(){
+  return camara;
+}
+
 /**	void Dibuja( void )
 
 Procedimiento de dibujo del modelo. Es llamado por glut cada vez que se debe redibujar.
@@ -135,7 +149,16 @@ void Dibuja(void)
 
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // Inicializa el buffer de color y el Z-Buffer
 
-  transformacionVisualizacion(); // Carga transformacion de visualizacion
+  helicoptero.actualizar();
+
+  if(camara == 0){
+    transformacionVisualizacion(); // Carga transformacion de visualizacion
+  }else{
+    Punto3D pos = helicoptero.getPosicion();
+    cambiarCoordenadasCamara2(pos.x, pos.y, pos.z);
+    transformaciónVisualizacion2(-helicoptero.getGiroHelicoptero());
+  }
+  
 
   glLightfv(GL_LIGHT0, GL_POSITION, pos); // Declaracion de luz. Colocada aqui esta fija en la escena
 
@@ -155,8 +178,17 @@ void Dibuja(void)
   }else if(modo_ejecucion == LOAD){
     objeto_load.drawSmooth(normales);
   }else{
+    suelo.draw();
+
+    glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, color);
+    //IMPORTANTE: Las animaciones estan atadas a los FPS, por lo que si se cambian los FPS, se cambia la velocidad de las animaciones
     helicoptero.draw();
     controlador->actualizar();
+
+    glTranslatef(20, 0, 10);
+    glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, color2);
+    //IMPORTANTE: Las animaciones estan atadas a los FPS, por lo que si se cambian los FPS, se cambia la velocidad de las animaciones
+    aspas.draw();
   }
 
   glPopMatrix(); // Desapila la transformacion geometrica

@@ -24,7 +24,7 @@ public:
      * @brief Dibuja el objeto con el modo de sombreado establecido
      * @post El objeto no es modificado
     */
-    void draw();
+    virtual void draw();
 };
 
 #endif
