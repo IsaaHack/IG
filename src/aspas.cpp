@@ -19,7 +19,7 @@ Escalado Aspas::s_c = Escalado(Vector3D(2, 6, 1));
 
 Aspas::Aspas()
 {
-    *this = Aspas(5, 10);
+    *this = Aspas(30, 100);
 }
 
 Aspas::Aspas(float velocidad_cabeza, float velocidad_aspas)
@@ -82,13 +82,16 @@ Aspas::Aspas(float velocidad_cabeza, float velocidad_aspas)
 //IMPORTANTE: Las animaciones estan atadas a los FPS, por lo que si se cambian los FPS, se cambia la velocidad de las animaciones
 void Aspas::actualizar()
 {
+    FiguraAnimada::actualizar();
+
+    double tiempoTranscurrido = getTiempoTranscurrido();
 
     if(sentido)
-        giro_y += velocidad_cabeza;
+        giro_y += velocidad_cabeza * tiempoTranscurrido;
     else
-        giro_y -= velocidad_cabeza;
+        giro_y -= velocidad_cabeza * tiempoTranscurrido;
 
-    giro_x += velocidad_aspas;
+    giro_x += velocidad_aspas * tiempoTranscurrido;
 
     if(giro_x > 360)
         giro_x -= 360;
@@ -107,7 +110,7 @@ void Aspas::actualizar()
 
 void Aspas::draw()
 {
-    actualizar();
+    //actualizar();
     molino.draw();
 }
 

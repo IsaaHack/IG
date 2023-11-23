@@ -1,5 +1,15 @@
 #include "helicoptero.h"
 
+// Constantes
+const float ACELERACION_HELICE = 360 * 1000.0;
+const float VELOCIDAD_MAXIMA_CABECEO = 360.0 * 1;
+const float VELOCIDAD_MAXIMA_ALABEO = 360.0 * 1;
+const float VELOCIDAD_MAXIMA_GIRO = 360.0 * 2;
+const float VELOCIDAD_MAXIMA_HELICE = 360.0 * 850.0;
+const float VELOCIDAD_AVANCE = 10.0;
+const float ANGULO_MAXIMO_ALABEO = 45.0;
+const float ANGULO_MAXIMO_CABECEO = 45.0;
+const float ROZAMIENTO = 0.0015;
 
 Helicoptero::Helicoptero()
 {
@@ -13,6 +23,7 @@ Helicoptero::Helicoptero()
     velocidad_giro = 0;
     velocidad_vertical = 0;
     heli_x = heli_y = heli_z = 0;
+    tiempo_cayendo = 0;
 
     r1.set(ejex, -90);
     r_helice.set(ejez, giro_helice);
@@ -30,8 +41,6 @@ Helicoptero::Helicoptero()
     helicoptero.addHijo(&asp);
 
     asp.addHijo(&r_helice);
-    asp.addHijo(&col);
-
     asp.addHijo(&t1);
     asp.addHijo(&helice);
 }
@@ -48,29 +57,19 @@ void Helicoptero::cargar(const char *ply_cuerpo, const char *ply_helice)
     t2.set(Vector3D(helice.getPuntoPivote()));
 }
 
-void Helicoptero::cargar(const char *ply)
+void Helicoptero::cargar()
 {
-    cuerpo.cargar("plys/heli.ply");
-    helice.cargar("plys/helices.ply");
+    cargar("plys/heli.ply", "plys/helices.ply");
 }
 
 float Helicoptero::calcularVelocidadAscenso() {
-    // Valores predefinidos (ficticios) para la demostración
-    float densidadAire = 1.225;  // Densidad del aire en kg/m^3
-    float areaRotor = 25.0;     // Área del rotor en m^2
-    float longitudPala = 5.0;   // Longitud de la pala del rotor en metros
-    float coeficienteSustentacion = 0.8;  // Coeficiente de sustentación (ficticio)
-    float pesoHelicoptero = 5000.0;       // Peso del helicóptero en Newtons (ficticio)
-    float velocidadHelicoptero = 20.0;    // Velocidad del helicóptero en m/s (valor ficticio)
-
-
     float velocidadAngularRotor = velocidad_helice * M_PI/180.0;   // Velocidad angular en rad/s 
+    float velocidadHelicoptero = velocidad_vertical;    // Velocidad del helicóptero en m/s (valor ficticio)
 
     // Calcular la fuerza de sustentación (T)
     float fuerzaSustentacion = 0.5 * densidadAire * areaRotor * longitudPala * velocidadAngularRotor*velocidadAngularRotor * coeficienteSustentacion;
 
     // Calcular la resistencia al avance
-    float coeficienteArrastre = 0.02;  // Coeficiente de arrastre (valor ficticio, debería ser obtenido de datos reales)
     float resistenciaAvance = 0.5 * coeficienteArrastre * densidadAire * areaRotor * velocidadHelicoptero*velocidadHelicoptero;
 
     // Calcular la velocidad de ascenso (Vz)
@@ -79,108 +78,136 @@ float Helicoptero::calcularVelocidadAscenso() {
     return velocidadAscenso;
 }
 
-float Helicoptero::calcularVelocidadDescenso() {
-    // El tiempo que ha pasado desde el ultimo frame
-    float tiempo_pasado = 1.0/60.0;  // en segundos
-
+float Helicoptero::calcularVelocidadDescenso(double tiempoTranscurrido) {
     // Aceleración debida a la gravedad (aproximadamente 9.8 m/s²)
     float gravedad = 9.8;  // en m/s²
 
-    // Actualizar la velocidad vertical
-    velocidad_vertical += gravedad * tiempo_pasado;
+    // Calcular la velocidad vertical
+    float velocidad = gravedad * tiempoTranscurrido;
 
-    return velocidad_vertical;
+    return velocidad;
 }
 
 void Helicoptero::actualizar()
 {
-    //IMPORTANTE: Las animaciones estan atadas a los FPS, por lo que si se cambian los FPS, se cambia la velocidad de las animaciones
+    // Actualiza los relojes
+    FiguraAnimada::actualizar();
+    
+    // Obtiene el tiempo transcurrido desde la última actualización
+    double tiempoTranscurrido = getTiempoTranscurrido();
+
+    // Si sube o baja el helicóptero, se actualiza la velocidad de las hélices
     if(controlador.getSubir()){
         if(velocidad_helice < VELOCIDAD_MAXIMA_HELICE)
-            velocidad_helice += 1;
-        
+            velocidad_helice += ACELERACION_HELICE * tiempoTranscurrido;
+        tiempo_cayendo = 0;
+    }else{
+        if(tiempo_cayendo < 1000) tiempo_cayendo += tiempoTranscurrido*100;
+        else tiempo_cayendo = 1000;
     }
         
+    // Si sube o baja el helicóptero, se actualiza la velocidad de las hélices
     if(controlador.getBajar()){
-        if(velocidad_helice > 0)
-            velocidad_helice -= 1;
-        
-        heli_y -= calcularVelocidadDescenso()* 1.0/180.0;
+        if(velocidad_helice > 0){
+            velocidad_helice -= ACELERACION_HELICE * tiempoTranscurrido;
+        }
     }
 
-
+    // Se aplica el rozamiento a la velocidad de las hélices
     if(velocidad_helice > 0)
-        velocidad_helice -= velocidad_helice * rozamiento;
-    else if(velocidad_helice == 0)
-        heli_y -= calcularVelocidadDescenso()* 1.0/180.0;
-    else if(velocidad_helice < 0)
+        velocidad_helice -= velocidad_helice * ROZAMIENTO;
+    else if(velocidad_helice < 0)// Para no tener velocidades negativas
         velocidad_helice = 0;
 
-    heli_y += calcularVelocidadAscenso()*2;
-    
 
+    //Balance entre velocidad de ascenso y descenso
+    //para hacer mas o menos controlable el helicoptero
+
+    velocidad_vertical = calcularVelocidadAscenso() / 50.0;
+    if(velocidad_vertical == 0) tiempo_cayendo = 0;
+    velocidad_vertical -= calcularVelocidadDescenso(tiempo_cayendo);
+    heli_y += velocidad_vertical * tiempoTranscurrido;
+
+    // Si el helicoptero esta en el aire
     if(heli_y > 0){
+        // Si el helicoptero esta en el aire, puede moverse en cualquier direccion
         if(controlador.getGiroIzquierda()){
-            giro_giro += VELOCIDAD_MAXIMA_GIRO;
+            giro_giro += VELOCIDAD_MAXIMA_GIRO * tiempoTranscurrido;
             if(giro_giro > 360)
                 giro_giro -= 360;
         }
 
         if(controlador.getGiroDerecha()){
-            giro_giro -= VELOCIDAD_MAXIMA_GIRO;
+            giro_giro -= VELOCIDAD_MAXIMA_GIRO * tiempoTranscurrido;
             if(giro_giro < 0)
                 giro_giro += 360;
         }
 
         if(controlador.getAlabeoIzquierda()){
-            giro_alabeo += VELOCIDAD_MAXIMA_ALABEO;
+            giro_alabeo += VELOCIDAD_MAXIMA_ALABEO * tiempoTranscurrido;
             if(giro_alabeo > ANGULO_MAXIMO_ALABEO)
                 giro_alabeo = ANGULO_MAXIMO_ALABEO;
         }
 
         if(controlador.getAlabeoDerecha()){
-            giro_alabeo -= VELOCIDAD_MAXIMA_ALABEO;
+            giro_alabeo -= VELOCIDAD_MAXIMA_ALABEO * tiempoTranscurrido;
             if(giro_alabeo < -ANGULO_MAXIMO_ALABEO)
                 giro_alabeo = -ANGULO_MAXIMO_ALABEO;
         }
 
         if(controlador.getCabeceoDelante()){
-            giro_cabeceo += VELOCIDAD_MAXIMA_CABECEO;
+            giro_cabeceo += VELOCIDAD_MAXIMA_CABECEO * tiempoTranscurrido;
             if(giro_cabeceo > ANGULO_MAXIMO_CABECEO)
                 giro_cabeceo = ANGULO_MAXIMO_CABECEO;
         }
 
         if(controlador.getCabeceoDetras()){
-            giro_cabeceo -= VELOCIDAD_MAXIMA_CABECEO;
+            giro_cabeceo -= VELOCIDAD_MAXIMA_CABECEO * tiempoTranscurrido;
             if(giro_cabeceo < -ANGULO_MAXIMO_CABECEO)
                 giro_cabeceo = -ANGULO_MAXIMO_CABECEO;
         }
 
+        //Para hacer que el helicoptero vuelva a la posicion de equilibrio
         giro_alabeo *= 0.99;
         giro_cabeceo *= 0.99;
 
-        heli_z += -0.01 * giro_alabeo * cos(giro_giro * M_PI/180.0) + 0.01 * giro_cabeceo * sin(-giro_giro * M_PI/180.0);
-        heli_x += 0.01 * giro_cabeceo * cos(-giro_giro * M_PI/180.0) - 0.01 * giro_alabeo * sin(giro_giro * M_PI/180.0);
-    }else{
+        // Distancia recorrida en el eje xz
+        float distancia_avance = VELOCIDAD_AVANCE * tiempoTranscurrido;
+        // Ángulo de giro en radianes
+        float giro_radianes = giro_giro * M_PI/180.0;
+    
+        // z += d * (gCabeceo * sin(-gGiro) - gAlabeo * cos(gGiro))
+        // x += d * (gCabeceo * cos(-gGiro) - gAlabeo * sin(gGiro))
+        heli_z += distancia_avance * (giro_cabeceo * sin(-giro_radianes) - giro_alabeo * cos(giro_radianes));
+        heli_x += distancia_avance * (giro_cabeceo * cos(-giro_radianes) - giro_alabeo * sin(giro_radianes));
+    }else{// Si el helicoptero esta en el suelo
+
+        //Para hacer que el helicoptero vuelva a la posicion de equilibrio
         giro_alabeo *= 0.8;
         giro_cabeceo *= 0.8;
 
+        //Para que no se quede bailando en el suelo
         if(giro_alabeo < 0.01 && giro_alabeo > -0.01)
             giro_alabeo = 0;
 
         if(giro_cabeceo < 0.01 && giro_cabeceo > -0.01)
             giro_cabeceo = 0;
 
+        //Para que no se salga del suelo
         heli_y = 0;
     }
     
-    
-    giro_helice += velocidad_helice;
+    // Se actualiza el giro de la hélice
+    giro_helice += velocidad_helice * tiempoTranscurrido;
+    if(giro_helice > 360)
+        giro_helice -= 360;
+
+    // Actualiza las rotaciones y traslaciones
     posicion.set(Vector3D(heli_x, heli_y, heli_z));
-    r_helice.set(ejez, giro_helice);
-    r_giro.set(ejey, giro_giro);
-    r_alabeo.set(ejex, -giro_alabeo);
-    r_cabeceo.set(ejez, -giro_cabeceo);
+    r_helice.setAngulo(giro_helice);
+    r_giro.setAngulo(giro_giro);
+    r_alabeo.setAngulo(-giro_alabeo);
+    r_cabeceo.setAngulo(-giro_cabeceo);
 }
 
 void Helicoptero::draw()

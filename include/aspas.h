@@ -1,7 +1,7 @@
 #ifndef ASPAS_H
 #define ASPAS_H
 
-#include <objeto3D.h>
+#include <figuraAnimada.h>
 #include <transformaciones.h>
 #include <cubo.h>
 
@@ -9,7 +9,7 @@
 
 //IMPORTANTE: Las animaciones estan atadas a los FPS, por lo que si se cambian los FPS, se cambia la velocidad de las animaciones
 
-class Aspas : public Objeto3D{
+class Aspas : public FiguraAnimada{
 private:
         Cubo cubo;
         
@@ -25,11 +25,10 @@ private:
         float giro_x, giro_y;
         float velocidad_cabeza, velocidad_aspas;
         bool sentido;
-
-        void actualizar();
     public:
         Aspas();
         Aspas(float velocidad_cabeza, float velocidad_aspas);
+        virtual void actualizar();
         virtual void draw();
 };
 

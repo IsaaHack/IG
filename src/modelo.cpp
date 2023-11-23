@@ -50,7 +50,7 @@ ObjetoPLY objeto_load;
 ObjetoRevolucion objeto_spin;
 Helicoptero helicoptero;
 ControladorHelicoptero* controlador = helicoptero.getControlador();
-Aspas aspas(3.0,10.0);
+Aspas aspas(100.0,360.0*10.0);
 Suelo suelo;
 int camara = 0;
 
@@ -149,6 +149,7 @@ void Dibuja(void)
 
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // Inicializa el buffer de color y el Z-Buffer
 
+  aspas.actualizar();
   helicoptero.actualizar();
 
   if(camara == 0){

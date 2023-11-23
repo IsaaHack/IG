@@ -1,20 +1,21 @@
 #ifndef HELICOPTERO_H
 #define HELICOPTERO_H
 
-#include <objeto3D.h>
+#include <figuraAnimada.h>
 #include <transformaciones.h>
 #include <objetoPLY.h>
 
-const float VELOCIDAD_MAXIMA_ASCENSO = 1.0;
-const float VELOCIDAD_MAXIMA_DESCENSO = -1.0;
-const float VELOCIDAD_MAXIMA_CABECEO = 1.0;
-const float VELOCIDAD_MAXIMA_ALABEO = 1.0;
-const float VELOCIDAD_MAXIMA_GIRO = 1.0;
-const float VELOCIDAD_MAXIMA_HELICE = 3600.0;
-const float ANGULO_MAXIMO_ALABEO = 45.0;
-const float ANGULO_MAXIMO_CABECEO = 45.0;
-const float rozamiento = 0.002;
+// Valores predefinidos (ficticios) para el cálculo de la velocidad de ascenso
+#define densidadAire 1.225f  // Densidad del aire en kg/m^3
+#define areaRotor 25.0f    // Área del rotor en m^2
+#define longitudPala 5.0f  // Longitud de la pala del rotor en metros
+#define coeficienteSustentacion 0.8f  // Coeficiente de sustentación (ficticio)
+#define pesoHelicoptero 5000.0f      // Peso del helicóptero en Newtons (ficticio)
+#define coeficienteArrastre 0.02f  // Coeficiente de arrastre (valor ficticio, debería ser obtenido de datos reales)
 
+/**
+ * Clase que controla el helicoptero
+*/
 class ControladorHelicoptero{
     private:
         bool cabeceo_delante, cabeceo_detras;
@@ -43,9 +44,10 @@ class ControladorHelicoptero{
         void actualizar();
 };
 
-//IMPORTANTE: Las animaciones estan atadas a los FPS, por lo que si se cambian los FPS, se cambia la velocidad de las animaciones
-
-class Helicoptero : public Objeto3D{
+/**
+ * Clase que representa un helicoptero
+*/
+class Helicoptero : public FiguraAnimada{
 private:
         ObjetoPLY cuerpo, helice;
         
@@ -64,12 +66,13 @@ private:
         float giro_cabeceo, giro_alabeo, giro_giro;
         float velocidad_cabeceo, velocidad_alabeo, velocidad_giro;
         float velocidad_vertical;
+        float tiempo_cayendo;
 
         float calcularVelocidadAscenso();
-        float calcularVelocidadDescenso();
+        float calcularVelocidadDescenso(double tiempoTranscurrido);
     public:
         Helicoptero();
-        void cargar(const char *ply);
+        void cargar();
         void cargar(const char *ply_cuerpo, const char *ply_helice);
 
         ControladorHelicoptero* getControlador(){return &controlador;}

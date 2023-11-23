@@ -57,6 +57,17 @@ void printHelp()
   printf("f, F: Modo de visualización en relleno\n");
   printf("i, I: Activa/desactiva iluminación\n");
   printf("n, N: Activa/desactiva normales\n");
+  // Opcion de la camara
+  printf("v, V: Cambia la cámara\n");
+  // Opciones del helicoptero
+  printf("w, W: Avanza el helicóptero\n");
+  printf("s, S: Retrocede el helicóptero\n");
+  printf("a, A: Alabeo a la izquierda\n");
+  printf("d, D: Alabeo a la derecha\n");
+  printf("q, Q: Giro a la izquierda\n");
+  printf("e, E: Giro a la derecha\n");
+  printf("espacio: Subir el helicóptero\n");
+  printf("c, C: Bajar el helicóptero\n");
   //Final
   printf("\n Escape: Salir");
   printf("\n\n\n");
@@ -163,7 +174,8 @@ void letra(unsigned char k, int x, int y)
   if(getCamara() == 0)
     setCamara(rotxCamara, rotyCamara, dCamara);
   else setCamara2(rotxCamara2, rotyCamara2, dCamara);
-  glutPostRedisplay(); // Algunas de las opciones cambian paramentros
+  //quito el redisplays porque no hace falta actualizar la imagen
+  //glutPostRedisplay(); // Algunas de las opciones cambian paramentros
 } // de la camara. Es necesario actualziar la imagen
 
 /**		void especial(int k, int x, int y)
@@ -246,5 +258,5 @@ void especial(int k, int x, int y)
   if(getCamara() == 0)
     setCamara(rotxCamara, rotyCamara, dCamara);
   else setCamara2(rotxCamara2, rotyCamara2, dCamara);
-  glutPostRedisplay(); // Actualiza la imagen (ver proc. letra)
+  //glutPostRedisplay(); // Actualiza la imagen (ver proc. letra)
 }
