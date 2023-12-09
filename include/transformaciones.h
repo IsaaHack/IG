@@ -3,7 +3,7 @@
 
 #include "objeto3D.h"
 #include <GL/glut.h>
-#include <geometria3D.h>
+#include <trigonometria.h>
 
 
 class Transformacion : public Objeto3D{

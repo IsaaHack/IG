@@ -10,9 +10,9 @@ void ObjetoRevolucion::calcularVertices(const vector<float> &perfil){
             float y = perfil[i + 1];
             float z = -perfil[i] * sin(angulo) + perfil[i + 2] * cos(angulo);
 
-            vertices.push_back(x);
-            vertices.push_back(y);
-            vertices.push_back(z);
+            malla.vertices.push_back(x);
+            malla.vertices.push_back(y);
+            malla.vertices.push_back(z);
         }
     }
 }
@@ -29,13 +29,13 @@ void ObjetoRevolucion::calcularTriangulos(bool tapa_superior, bool tapa_inferior
             int p3 = primer_punto_capa_siguiente + j + 1;
             int p4 = primer_punto_capa_siguiente + j;
 
-            caras.push_back(p1);
-            caras.push_back(p2);
-            caras.push_back(p3);
+            malla.caras.push_back(p1);
+            malla.caras.push_back(p2);
+            malla.caras.push_back(p3);
 
-            caras.push_back(p1);
-            caras.push_back(p3);
-            caras.push_back(p4);
+            malla.caras.push_back(p1);
+            malla.caras.push_back(p3);
+            malla.caras.push_back(p4);
         }
 
         int p1 = primer_punto_capa_actual + precision - 1;
@@ -43,39 +43,39 @@ void ObjetoRevolucion::calcularTriangulos(bool tapa_superior, bool tapa_inferior
         int p3 = primer_punto_capa_siguiente;
         int p4 = primer_punto_capa_siguiente + precision - 1;
 
-        caras.push_back(p1);
-        caras.push_back(p2);
-        caras.push_back(p3);
+        malla.caras.push_back(p1);
+        malla.caras.push_back(p2);
+        malla.caras.push_back(p3);
 
-        caras.push_back(p1);
-        caras.push_back(p3);
-        caras.push_back(p4);
+        malla.caras.push_back(p1);
+        malla.caras.push_back(p3);
+        malla.caras.push_back(p4);
     }
 
-    if(tapa_superior && Punto3D(0, getVertice(0).y, 0) != getVertice(0)){
-        float y = getVertice(0).y;
-        vertices.push_back(0);
-        vertices.push_back(y);
-        vertices.push_back(0);
+    if(tapa_superior && Punto3D(0, malla.getVertice(0).y, 0) != malla.getVertice(0)){
+        float y = malla.getVertice(0).y;
+        malla.vertices.push_back(0);
+        malla.vertices.push_back(y);
+        malla.vertices.push_back(0);
 
         for(int i = 0; i < precision; i++){
-            caras.push_back(i);
-            caras.push_back(vertices.size() / 3 - 1);
-            caras.push_back(((i + 1) % precision));
+            malla.caras.push_back(i);
+            malla.caras.push_back(malla.vertices.size() / 3 - 1);
+            malla.caras.push_back(((i + 1) % precision));
         }
     }
 
     int primer_punto_ultima_capa = (num_vertices_perfil - 1) * precision;
-    if(tapa_inferior && Punto3D(0, getVertice(primer_punto_ultima_capa).y, 0) != getVertice(primer_punto_ultima_capa)){
-        float y = getVertice(primer_punto_ultima_capa).y;
-        vertices.push_back(0);
-        vertices.push_back(y);
-        vertices.push_back(0);
+    if(tapa_inferior && Punto3D(0, malla.getVertice(primer_punto_ultima_capa).y, 0) != malla.getVertice(primer_punto_ultima_capa)){
+        float y = malla.getVertice(primer_punto_ultima_capa).y;
+        malla.vertices.push_back(0);
+        malla.vertices.push_back(y);
+        malla.vertices.push_back(0);
         
         for(int i = 0; i < precision; i++){
-            caras.push_back(primer_punto_ultima_capa + ((i + 1) % precision));
-            caras.push_back(vertices.size() / 3 - 1);
-            caras.push_back(primer_punto_ultima_capa + i);
+            malla.caras.push_back(primer_punto_ultima_capa + ((i + 1) % precision));
+            malla.caras.push_back(malla.vertices.size() / 3 - 1);
+            malla.caras.push_back(primer_punto_ultima_capa + i);
         }
     }
 }
@@ -103,7 +103,7 @@ void ObjetoRevolucion::verificarPerfil(vector<float> &perfil) const
 
 ObjetoRevolucion::ObjetoRevolucion()
 {
-    modo_sombreado = GL_SMOOTH;
+    setModoSombreado(GL_SMOOTH);
     precision = 3;
 }
 
@@ -112,7 +112,7 @@ void ObjetoRevolucion::cargar(const char *nombre_archivo_ply){
 }
 
 void ObjetoRevolucion::cargar(const char *nombre_archivo_ply, int precision, bool tapa_superior, bool tapa_inferior){
-    clear();
+    Geometria::clear();
     vector<float> perfil;
     ply::read_vertices(nombre_archivo_ply, perfil);
 
@@ -127,15 +127,15 @@ void ObjetoRevolucion::cargar(const char *nombre_archivo_ply, int precision, boo
     verificarPerfil(perfil);
     calcularVertices(perfil);
     calcularTriangulos(tapa_superior, tapa_inferior);
-    Malla::calcularNormalesVertices();
+    malla.calcularNormalesVertices();
 }
 
 void ObjetoRevolucion::draw()
 {
-    this->Malla::draw();
+    this->Geometria::draw();
 }
 
 void ObjetoRevolucion::draw(bool draw_normales)
 {
-    this->Malla::draw(draw_normales);
+    this->Geometria::draw(draw_normales);
 }

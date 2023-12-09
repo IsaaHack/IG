@@ -2,7 +2,7 @@
 #define OBJETO3D_H
 
 #include <vector>
-#include "geometria3D.h"
+#include "trigonometria.h"
 
 class Objeto3D {
 protected:
@@ -10,7 +10,7 @@ protected:
 public:
     virtual void draw();
     virtual void addHijo(Objeto3D *objeto);
-    void clear();
+    virtual void clear();
 };
 
 #endif

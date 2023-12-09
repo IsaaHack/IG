@@ -1,7 +1,7 @@
 #ifndef OBJETOREVOLUCION_H
 #define OBJETOREVOLUCION_H
 
-#include "malla.h"
+#include "geometria.h"
 
 /**
  * @brief Clase que representa un objeto de revolución
@@ -9,7 +9,7 @@
  * @details Hereda de Malla
  * @see Malla
 */
-class ObjetoRevolucion : public Malla{
+class ObjetoRevolucion : public Geometria{
     protected:
         int precision; // Número de divisiones del perfil
         int num_vertices_perfil; // Número de vértices del perfil

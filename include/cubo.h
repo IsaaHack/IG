@@ -2,21 +2,29 @@
 #define CUBO_H
 
 #include <GL/glut.h>
-#include "objeto3D.h"
+#include "geometria.h"
 
-class Cubo : public Objeto3D{
-private:
+class Cubo : public Geometria{
+protected:
   int lado;
+  void calcularVertices();
+  void calcularCaras();
 
 public:
   Cubo(){
     lado = 1;
+    cargar();
   }
   Cubo(float lado){
     this->lado = lado;
+    cargar();
   }
 
-  void draw();
+  virtual void cargar(const char *nombre_archivo_ply = NULL);
+
+  virtual void cargarTextura(const char *nombre_archivo_jpg);
+
+  virtual void draw();
 };
 
 #endif

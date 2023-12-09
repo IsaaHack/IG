@@ -4,13 +4,13 @@
 
 void ObjetoPLY::cargar(const char *nombre_archivo_ply)
 {
-    clear();
+    Geometria::clear();
     
-    read(nombre_archivo_ply, vertices, caras);
+    read(nombre_archivo_ply, malla.vertices, malla.caras);
     
-    calcularNormalesVertices();
+    malla.calcularNormalesVertices();
 }
 
 void ObjetoPLY::draw() {
-    this->Malla::draw();
+    this->Geometria::draw();
 }

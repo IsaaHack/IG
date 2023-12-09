@@ -1,5 +1,5 @@
-#ifndef VECTOR3D_H
-#define VECTOR3D_H
+#ifndef TRIGONOMETRIA_H
+#define TRIGONOMETRIA_H
 
 #include <GL/glut.h>
 #include <cmath>

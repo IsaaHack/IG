@@ -53,6 +53,8 @@ ControladorHelicoptero* controlador = helicoptero.getControlador();
 Aspas aspas(100.0,360.0*10.0);
 Suelo suelo;
 int camara = 0;
+Cubo dado;
+Material material_dado;
 
 
 /**	void initModel()
@@ -68,6 +70,10 @@ void initModel(int modo_ejec, char *ruta_ply)
   normales = false;
   glPolygonMode(GL_FRONT_AND_BACK, modo);
   modo_ejecucion = modo_ejec;
+  material_dado.setColorAmbiental(1, 1, 1, 1);
+  material_dado.setColorDifuso(1, 1, 1, 1);
+  material_dado.setColorEspecular(0, 0, 0.1, 1);
+  material_dado.setExponenteBrillo(10);
 
   if(modo_ejecucion == LOAD){// Cargo el objeto que entra por parámetro
     objeto_load.cargar(ruta_ply);
@@ -75,6 +81,9 @@ void initModel(int modo_ejec, char *ruta_ply)
     objeto_spin.cargar(ruta_ply);
   }else{// Inicializamos los objetos de la escena
     helicoptero.cargar("./plys/heli.ply", "./plys/helices.ply");
+    dado.setModoSombreado(GL_FLAT);
+    dado.setMaterial(material_dado);
+    dado.cargarTextura("./textures/dado.jpg");
   }
 
   camara = 0;
@@ -179,16 +188,15 @@ void Dibuja(void)
   }else if(modo_ejecucion == LOAD){
     objeto_load.drawSmooth(normales);
   }else{
-    suelo.draw();
+    //suelo.draw();
 
     glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, color);
-    //IMPORTANTE: Las animaciones estan atadas a los FPS, por lo que si se cambian los FPS, se cambia la velocidad de las animaciones
-    helicoptero.draw();
-    controlador->actualizar();
+    dado.draw();
+    //helicoptero.draw();
+    //controlador->actualizar();
 
     glTranslatef(20, 0, 10);
     glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, color2);
-    //IMPORTANTE: Las animaciones estan atadas a los FPS, por lo que si se cambian los FPS, se cambia la velocidad de las animaciones
     aspas.draw();
   }
 

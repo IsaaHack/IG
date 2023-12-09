@@ -1,16 +1,16 @@
 #ifndef OBJETO_PLY_H
 #define OBJETO_PLY_H
 
-#include "malla.h"
+#include "geometria.h"
 
-class ObjetoPLY : public Malla{
+class ObjetoPLY : public Geometria{
 public:
     /**
      * @brief Constructor por defecto
      * @post Crea un objeto vacío con modo de sombreado GL_SMOOTH
     */
     ObjetoPLY(){
-        modo_sombreado = GL_SMOOTH;
+        setModoSombreado(GL_SMOOTH);
     };
 
     /**

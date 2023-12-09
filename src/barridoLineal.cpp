@@ -86,9 +86,9 @@ void BarridoLineal::calcularVertices(const vector<float> &objeto, const Vector3D
     for(int i = 0; i < objeto.size(); i += 3){
         Punto3D p = Punto3D(objeto[i], objeto[i + 1], objeto[i + 2]);
         p = m * p;
-        vertices.push_back(p.x);
-        vertices.push_back(p.y);
-        vertices.push_back(p.z);
+        malla.vertices.push_back(p.x);
+        malla.vertices.push_back(p.y);
+        malla.vertices.push_back(p.z);
     }
 
     normal = vectores_trayectoria[0];
@@ -99,7 +99,7 @@ void BarridoLineal::calcularVertices(const vector<float> &objeto, const Vector3D
         m.set(normal, dir);
 
         for(int j = 0; j < objeto.size(); j += 3){
-            Punto3D p = Punto3D(getVertice(num_vertices_objeto*(i-1) + j/3));
+            Punto3D p = Punto3D(malla.getVertice(num_vertices_objeto*(i-1) + j/3));
             
             p.x += v.x;
             p.y += v.y;
@@ -107,9 +107,9 @@ void BarridoLineal::calcularVertices(const vector<float> &objeto, const Vector3D
 
             p = m * p;
             
-            vertices.push_back(p.x);
-            vertices.push_back(p.y);
-            vertices.push_back(p.z);
+            malla.vertices.push_back(p.x);
+            malla.vertices.push_back(p.y);
+            malla.vertices.push_back(p.z);
         }
 
         v = Vector3D(trayectoria[i-1], trayectoria[i]);
@@ -118,21 +118,21 @@ void BarridoLineal::calcularVertices(const vector<float> &objeto, const Vector3D
     }
 
     for(int i = 0; i < objeto.size(); i += 3){
-        Punto3D p = Punto3D(getVertice(num_vertices_objeto*(num_vertices_trayectoria-2) + i/3));
+        Punto3D p = Punto3D(malla.getVertice(num_vertices_objeto*(num_vertices_trayectoria-2) + i/3));
         p.x += v.x;
         p.y += v.y;
         p.z += v.z;
-        vertices.push_back(p.x);
-        vertices.push_back(p.y);
-        vertices.push_back(p.z);
+        malla.vertices.push_back(p.x);
+        malla.vertices.push_back(p.y);
+        malla.vertices.push_back(p.z);
     }
 
-    vertices.push_back(trayectoria[0].x);
-    vertices.push_back(trayectoria[0].y);
-    vertices.push_back(trayectoria[0].z);
-    vertices.push_back(trayectoria[num_vertices_trayectoria - 1].x);
-    vertices.push_back(trayectoria[num_vertices_trayectoria - 1].y);
-    vertices.push_back(trayectoria[num_vertices_trayectoria - 1].z);
+    malla.vertices.push_back(trayectoria[0].x);
+    malla.vertices.push_back(trayectoria[0].y);
+    malla.vertices.push_back(trayectoria[0].z);
+    malla.vertices.push_back(trayectoria[num_vertices_trayectoria - 1].x);
+    malla.vertices.push_back(trayectoria[num_vertices_trayectoria - 1].y);
+    malla.vertices.push_back(trayectoria[num_vertices_trayectoria - 1].z);
 
 }
 
@@ -148,13 +148,13 @@ void BarridoLineal::calcularTriangulos()
             int p3 = primer_punto_capa_siguiente + j + 1;
             int p4 = primer_punto_capa_siguiente + j;
 
-            caras.push_back(p1);
-            caras.push_back(p2);
-            caras.push_back(p3);
+            malla.caras.push_back(p1);
+            malla.caras.push_back(p2);
+            malla.caras.push_back(p3);
 
-            caras.push_back(p1);
-            caras.push_back(p3);
-            caras.push_back(p4);
+            malla.caras.push_back(p1);
+            malla.caras.push_back(p3);
+            malla.caras.push_back(p4);
         }
 
         int p1 = primer_punto_capa_actual + num_vertices_objeto - 1;
@@ -162,28 +162,28 @@ void BarridoLineal::calcularTriangulos()
         int p3 = primer_punto_capa_siguiente;
         int p4 = primer_punto_capa_siguiente + num_vertices_objeto - 1;
 
-        caras.push_back(p1);
-        caras.push_back(p2);
-        caras.push_back(p3);
+        malla.caras.push_back(p1);
+        malla.caras.push_back(p2);
+        malla.caras.push_back(p3);
 
-        caras.push_back(p1);
-        caras.push_back(p3);
-        caras.push_back(p4);
+        malla.caras.push_back(p1);
+        malla.caras.push_back(p3);
+        malla.caras.push_back(p4);
     }
 
-    int punto_centro_inf = vertices.size() / 3 - 2;
-    int punto_centro_sup = vertices.size() / 3 - 1;
+    int punto_centro_inf = malla.vertices.size() / 3 - 2;
+    int punto_centro_sup = malla.vertices.size() / 3 - 1;
 
-    if(getVertice(punto_centro_inf) != getVertice(punto_centro_sup)){
+    if(malla.getVertice(punto_centro_inf) != malla.getVertice(punto_centro_sup)){
         for(int i = 0; i < num_vertices_objeto; i++){
             int p1 = i;
             int p2 = punto_centro_inf;
             int p3 = (i + 1)%num_vertices_objeto;
             
 
-            caras.push_back(p1);
-            caras.push_back(p2);
-            caras.push_back(p3);
+            malla.caras.push_back(p1);
+            malla.caras.push_back(p2);
+            malla.caras.push_back(p3);
         }
 
 
@@ -192,9 +192,9 @@ void BarridoLineal::calcularTriangulos()
             int p2 = (i+1)%num_vertices_objeto+(num_vertices_trayectoria-1)*num_vertices_objeto;
             int p3 = punto_centro_sup;
 
-            caras.push_back(p1);
-            caras.push_back(p2);
-            caras.push_back(p3);
+            malla.caras.push_back(p1);
+            malla.caras.push_back(p2);
+            malla.caras.push_back(p3);
         }
     }
     
@@ -233,7 +233,7 @@ void BarridoLineal::cargar(const char *nombre_archivo_ply, const vector<Punto3D>
 
     calcularVertices(objeto, normal);
     calcularTriangulos();
-    calcularNormalesVertices();
+    malla.calcularNormalesVertices();
 }
 
 void BarridoLineal::cargarProbar(const char *nombre_archivo_ply, const vector<Punto3D> &trayectoria)
@@ -263,9 +263,9 @@ void BarridoLineal::cargarProbar(const char *nombre_archivo_ply, const vector<Pu
 
             p = m * p;
             
-            vertices.push_back(p.x);
-            vertices.push_back(p.y);
-            vertices.push_back(p.z);
+            malla.vertices.push_back(p.x);
+            malla.vertices.push_back(p.y);
+            malla.vertices.push_back(p.z);
 
             objeto[j] = p.x;
             objeto[j + 1] = p.y;
@@ -281,15 +281,15 @@ void BarridoLineal::cargarProbar(const char *nombre_archivo_ply, const vector<Pu
 
     num_vertices_trayectoria = this->trayectoria.size();
 
-    vertices.push_back(this->trayectoria[0].x);
-    vertices.push_back(this->trayectoria[0].y);
-    vertices.push_back(this->trayectoria[0].z);
-    vertices.push_back(this->trayectoria[num_vertices_trayectoria - 1].x);
-    vertices.push_back(this->trayectoria[num_vertices_trayectoria - 1].y);
-    vertices.push_back(this->trayectoria[num_vertices_trayectoria - 1].z);
+    malla.vertices.push_back(this->trayectoria[0].x);
+    malla.vertices.push_back(this->trayectoria[0].y);
+    malla.vertices.push_back(this->trayectoria[0].z);
+    malla.vertices.push_back(this->trayectoria[num_vertices_trayectoria - 1].x);
+    malla.vertices.push_back(this->trayectoria[num_vertices_trayectoria - 1].y);
+    malla.vertices.push_back(this->trayectoria[num_vertices_trayectoria - 1].z);
 
     calcularTriangulos();
-    calcularNormalesVertices();
+    malla.calcularNormalesVertices();
 }
 
 void BarridoLineal::cargar(const char *nombre_archivo_ply, const Vector3D &vector_trayectoria, int num_instancias)
@@ -311,7 +311,7 @@ void BarridoLineal::cargar(const char *nombre_archivo_ply, const Vector3D &vecto
 
     calcularVertices(objeto, normal);
     calcularTriangulos();
-    calcularNormalesVertices();
+    malla.calcularNormalesVertices();
 }
 
 void BarridoLineal::cargar(const vector<Punto3D> objeto, const Vector3D &vector_trayectoria, int num_instancias)
@@ -338,7 +338,7 @@ void BarridoLineal::cargar(const vector<Punto3D> objeto, const Vector3D &vector_
 
     calcularVertices(objeto_floats, normal);
     calcularTriangulos();
-    calcularNormalesVertices();
+    malla.calcularNormalesVertices();
 }
 
 void BarridoLineal::cargar(const char *nombre_archivo_ply, const char *nombre_archivo_trayectoria)
@@ -358,8 +358,8 @@ void BarridoLineal::cargar(const char *nombre_archivo_ply, const char *nombre_ar
 void BarridoLineal::draw(){
     glBegin(GL_POINTS);
     {
-        for(int i = 0; i < vertices.size(); i += 3){
-            glVertex3f(vertices[i], vertices[i + 1], vertices[i + 2]);
+        for(int i = 0; i < malla.vertices.size(); i += 3){
+            glVertex3f(malla.vertices[i], malla.vertices[i + 1], malla.vertices[i + 2]);
         }
     }
     glEnd();
@@ -374,5 +374,5 @@ void BarridoLineal::draw(){
     glEnd();
     
     
-    Malla::drawFlat(true);
+    malla.drawFlat(true);
 }

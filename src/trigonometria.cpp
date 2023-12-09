@@ -1,4 +1,4 @@
-#include "geometria3D.h"
+#include "trigonometria.h"
 
 Punto3D::Punto3D(GLfloat x, GLfloat y, GLfloat z)
 {

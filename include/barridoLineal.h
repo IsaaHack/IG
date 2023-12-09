@@ -1,9 +1,9 @@
 #ifndef BARRIDO_LINEAL_H
 #define BARRIDO_LINEAL_H
 
-#include <malla.h>
+#include <geometria.h>
 
-class BarridoLineal : public Malla{
+class BarridoLineal : public Geometria{
     protected:
         vector<Punto3D> trayectoria;
 

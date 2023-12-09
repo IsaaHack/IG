@@ -13,18 +13,27 @@ using namespace ply;
 /**
  * @brief Clase que representa una malla
  * @details Una malla se representa mediante un vector de vértices, un vector de caras y un vector de normales
- * @details Hereda de Objeto3D
- * @see Objeto3D
 */
-class Malla : public Objeto3D
+class Malla
 {
-protected:
+public:
     vector<float> vertices; // Vector de vértices
     vector<int> caras; // Vector de caras
     vector<float> normales; // Vector de normales de vertices
+    vector<int> coordenadas_textura; // Vector de coordenadas de textura
+    GLuint id_textura; // Identificador de textura
     int modo_sombreado; // Modo de sombreado
-    Punto3D punto_pivote; // Punto pivote
 
+    /**
+     * @brief Constructor por defecto
+    */
+    Malla();
+
+    /**
+     * @brief Destructor por defecto
+    */
+    ~Malla();
+    
     /**
      * @brief Obtiene el vértice i-ésimo
      * @param i Índice del vértice
@@ -85,6 +94,14 @@ protected:
     void normalizarNormales();
 
     /**
+     * @brief Establece las coordenadas de textura del vértice i-ésimo
+     * @param i Índice del vértice
+     * @param x Coordenada x de textura
+     * @param y Coordenada y de textura
+    */
+    void setCoodenadasTextura(int i, float x, float y);
+
+    /**
      * @brief Dibuja las normales de los vértices
      * @post El objeto no es modificado
     */
@@ -100,12 +117,6 @@ protected:
      * @brief Borra los datos de la malla
     */
     void clear();
-public:
-
-    /**
-     * @brief Carga un objeto a partir de un archivo PLY
-    */
-    virtual void cargar(const char *nombre_archivo_ply) = 0;
 
     /**
      * @brief Modifica el modo de sombreado
@@ -141,11 +152,7 @@ public:
     */
     virtual void drawFlat(bool draw_normales = false);
 
-    void setPuntoPivote(const Punto3D &punto_pivote);
-
-    Punto3D getPuntoPivote() const;
-
-    void calcularPuntoPivote();
+    virtual void asignarTextura(unsigned char *data, int width, int height);
 };
 
 
