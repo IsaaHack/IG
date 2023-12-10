@@ -54,7 +54,10 @@ Aspas aspas(100.0,360.0*10.0);
 Suelo suelo;
 int camara = 0;
 Cubo dado;
-Material material_dado;
+Material material_dado, material_lata, material_tapas;
+ObjetoRevolucion lata;
+Objeto3D root_scene;
+Traslacion t1(Vector3D(3, 0, 0));
 
 
 /**	void initModel()
@@ -70,17 +73,43 @@ void initModel(int modo_ejec, char *ruta_ply)
   normales = false;
   glPolygonMode(GL_FRONT_AND_BACK, modo);
   modo_ejecucion = modo_ejec;
+
   material_dado.setColorAmbiental(1, 1, 1, 1);
   material_dado.setColorDifuso(1, 1, 1, 1);
-  material_dado.setColorEspecular(0, 0, 0.1, 1);
-  material_dado.setExponenteBrillo(10);
+  material_dado.setColorEspecular(0, 0, 0, 1);
+  material_dado.setExponenteBrillo(0);
+
+  material_lata.setColorAmbiental(1, 1, 1, 1);
+  material_lata.setColorDifuso(1, 1, 1, 1);
+  material_lata.setColorEspecular(0.3, 0.3, 0.3, 1);
+  material_lata.setExponenteBrillo(10);
+
+  material_tapas.setColorAmbiental(1, 1, 1, 1);
+  material_tapas.setColorDifuso(0.6, 0.6, 0.6, 1);
+  material_tapas.setColorEspecular(1, 1, 1, 1);
+  material_tapas.setExponenteBrillo(100);
 
   if(modo_ejecucion == LOAD){// Cargo el objeto que entra por parámetro
+    root_scene.addHijo(&objeto_load);
     objeto_load.cargar(ruta_ply);
   }else if(modo_ejecucion == SPIN){// Cargo el objeto de revolución que entra por parámetro
+    root_scene.addHijo(&objeto_spin);
     objeto_spin.cargar(ruta_ply);
   }else{// Inicializamos los objetos de la escena
-    helicoptero.cargar("./plys/heli.ply", "./plys/helices.ply");
+    root_scene.addHijo(&lata);
+    root_scene.addHijo(&t1);
+    root_scene.addHijo(&dado);
+
+    //helicoptero.cargar("./plys/heli.ply", "./plys/helices.ply");
+    lata.cargar("./plys/lata-pcue.ply", 100, false, false);
+    lata.setMaterial(material_lata);
+    lata.cargarTapaInferior("./plys/lata-pinf.ply");
+    lata.cargarTapaSuperior("./plys/lata-psup.ply");
+    lata.cargarTexturaTapas("./textures/tapas.jpg");
+    lata.escalarVertices(5, 5, 5);
+    lata.setMaterialTapas(material_tapas);
+    lata.cargarTextura("./textures/coke.jpg");
+
     dado.setModoSombreado(GL_FLAT);
     dado.setMaterial(material_dado);
     dado.cargarTextura("./textures/dado.jpg");
@@ -158,8 +187,8 @@ void Dibuja(void)
 
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // Inicializa el buffer de color y el Z-Buffer
 
-  aspas.actualizar();
-  helicoptero.actualizar();
+  //aspas.actualizar();
+  //helicoptero.actualizar();
 
   if(camara == 0){
     transformacionVisualizacion(); // Carga transformacion de visualizacion
@@ -181,24 +210,7 @@ void Dibuja(void)
 
   // Dibuja el modelo (A rellenar en prácticas 1,2 y 3)
 
-  glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, color);
-
-  if(modo_ejecucion == SPIN){
-    objeto_spin.drawFlat(normales);
-  }else if(modo_ejecucion == LOAD){
-    objeto_load.drawSmooth(normales);
-  }else{
-    //suelo.draw();
-
-    glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, color);
-    dado.draw();
-    //helicoptero.draw();
-    //controlador->actualizar();
-
-    glTranslatef(20, 0, 10);
-    glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, color2);
-    aspas.draw();
-  }
+  root_scene.draw();
 
   glPopMatrix(); // Desapila la transformacion geometrica
 

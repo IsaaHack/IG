@@ -13,6 +13,8 @@ class ObjetoRevolucion : public Geometria{
     protected:
         int precision; // Número de divisiones del perfil
         int num_vertices_perfil; // Número de vértices del perfil
+        ObjetoRevolucion *tapa_superior; // Tapa superior
+        ObjetoRevolucion *tapa_inferior; // Tapa inferior
 
         /**
          * @brief Calcula los vértices de la malla a partir de un perfil
@@ -38,6 +40,17 @@ class ObjetoRevolucion : public Geometria{
          * @post El objeto no es modificado
         */
         void verificarPerfil(vector<float> &perfil) const;
+
+        vector<float> obtenerPerfil();
+
+        void calcularCoordenadasTextura(const vector<float> &perfil);
+
+        /**
+         * @brief Carga una textura a partir de un archivo JPG con un modo de dibujado dado
+         * @param modo Modo de dibujado
+         * @pre modo == 0 (para tapa_superior) || modo == 1 (para tapa_inferior)
+        */
+        virtual void calcularCoordenadasTextura(int modo);
     public:
         /**
          * @brief Constructor por defecto
@@ -46,11 +59,17 @@ class ObjetoRevolucion : public Geometria{
         ObjetoRevolucion();
 
         /**
+         * @brief Destructor por defecto
+         * @post Destruye el objeto
+        */
+        ~ObjetoRevolucion();
+
+        /**
          * @brief Carga un objeto a partir de un archivo PLY
          * @param nombre_archivo_ply Nombre del archivo PLY
          * @post El objeto es cargado con una precisión de 100 divisiones y con las tapas superior e inferior
         */
-        void cargar(const char *nombre_archivo_ply);
+        virtual void cargar(const char *nombre_archivo_ply);
 
         /**
          * @brief Carga un objeto a partir de un archivo PLY con una precisión y tapas dadas
@@ -62,6 +81,18 @@ class ObjetoRevolucion : public Geometria{
          * @post El objeto es cargado con la precisión y tapas dadas
         */
         void cargar(const char *nombre_archivo_ply, int precision, bool tapa_superior = true, bool tapa_inferior = true);
+
+        void cargarTapaSuperior(const char *nombre_archivo_ply);
+
+        void cargarTapaInferior(const char *nombre_archivo_ply);
+
+        virtual void cargarTextura(const char *nombre_archivo_jpg);
+
+        virtual void cargarTexturaTapas(const char *nombre_archivo_jpg);
+
+        virtual void escalarVertices(float factor_x, float factor_y, float factor_z);
+
+        void setMaterialTapas(const Material &material);
 
         /**
          * @brief Dibuja el objeto con el modo de dibujado actual

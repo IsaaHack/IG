@@ -20,7 +20,7 @@ public:
     vector<float> vertices; // Vector de vértices
     vector<int> caras; // Vector de caras
     vector<float> normales; // Vector de normales de vertices
-    vector<int> coordenadas_textura; // Vector de coordenadas de textura
+    vector<float> coordenadas_textura; // Vector de coordenadas de textura
     GLuint id_textura; // Identificador de textura
     int modo_sombreado; // Modo de sombreado
 
@@ -153,6 +153,8 @@ public:
     virtual void drawFlat(bool draw_normales = false);
 
     virtual void asignarTextura(unsigned char *data, int width, int height);
+
+    virtual void escalarVertices(float x, float y, float z);
 };
 
 

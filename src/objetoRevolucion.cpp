@@ -15,6 +15,14 @@ void ObjetoRevolucion::calcularVertices(const vector<float> &perfil){
             malla.vertices.push_back(z);
         }
     }
+
+    // Añadir el perfil al final para la costura
+    for(int i = 0; i < perfil.size(); i += 3){
+        malla.vertices.push_back(perfil[i]);
+        malla.vertices.push_back(perfil[i + 1]);
+        malla.vertices.push_back(perfil[i + 2]);
+    }
+    
 }
 
 void ObjetoRevolucion::calcularTriangulos(bool tapa_superior, bool tapa_inferior)
@@ -40,9 +48,21 @@ void ObjetoRevolucion::calcularTriangulos(bool tapa_superior, bool tapa_inferior
 
         int p1 = primer_punto_capa_actual + precision - 1;
         int p2 = primer_punto_capa_actual;
+        int p2_2 = num_vertices_perfil * precision + i;
         int p3 = primer_punto_capa_siguiente;
+        int p3_2 = num_vertices_perfil * precision + i + 1;
         int p4 = primer_punto_capa_siguiente + precision - 1;
 
+        //costura
+        malla.caras.push_back(p1);
+        malla.caras.push_back(p2_2);
+        malla.caras.push_back(p3_2);
+
+        malla.caras.push_back(p1);
+        malla.caras.push_back(p3_2);
+        malla.caras.push_back(p4);
+
+        
         malla.caras.push_back(p1);
         malla.caras.push_back(p2);
         malla.caras.push_back(p3);
@@ -50,6 +70,7 @@ void ObjetoRevolucion::calcularTriangulos(bool tapa_superior, bool tapa_inferior
         malla.caras.push_back(p1);
         malla.caras.push_back(p3);
         malla.caras.push_back(p4);
+        
     }
 
     if(tapa_superior && Punto3D(0, malla.getVertice(0).y, 0) != malla.getVertice(0)){
@@ -101,10 +122,122 @@ void ObjetoRevolucion::verificarPerfil(vector<float> &perfil) const
     }
 }
 
+vector<float> ObjetoRevolucion::obtenerPerfil()
+{
+    vector<float> perfil;
+
+    for(int i = 0; i < num_vertices_perfil; i ++){
+        perfil.push_back(malla.vertices[i*3*precision]);
+        perfil.push_back(malla.vertices[i*3*precision + 1]);
+        perfil.push_back(malla.vertices[i*3*precision + 2]);
+    }
+
+    return perfil;
+}
+
+void ObjetoRevolucion::calcularCoordenadasTextura(const vector<float> &perfil)
+{
+    vector<float> distancias;
+
+    float distancia_total = 0;
+    float delta_x = 1.0 / precision;
+
+    Vector3D v1, v2;
+
+    for(int i = 0; i < perfil.size() - 3; i += 3){
+        v1 = Vector3D(perfil[i], perfil[i + 1], perfil[i + 2]);
+        v2 = Vector3D(perfil[i + 3], perfil[i + 4], perfil[i + 5]);
+
+        float distancia = (v2 - v1).mod();
+
+        distancia_total += distancia;
+        distancias.push_back(distancia);
+    }
+
+    float x = 0;
+    float y = 1;
+
+    int d = 0;
+
+    for(int i = 0; i < num_vertices_perfil*precision*3; i += 3*precision){
+        x = 0;
+
+        for(int j = 0; j < precision; j++){
+            malla.setCoodenadasTextura(i/3 + j, x, y);
+            x += delta_x;
+            x = x > 1 ? 1 : x; // Para evitar errores de precisión
+        }
+
+        y -= distancias[d] / distancia_total;
+
+        d++;
+
+        y = y < 0 ? 0 : y; // Para evitar errores de precisión
+    }
+
+    //costura
+    y = 1;
+    for(int i = 0; i < num_vertices_perfil; i ++){
+        malla.setCoodenadasTextura(num_vertices_perfil*precision + i, 1, y);
+        y += distancias[i] / distancia_total;
+
+        y = y < 0 ? 0 : y; // Para evitar errores de precisión
+    }
+
+}
+
+void ObjetoRevolucion::calcularCoordenadasTextura(int modo)
+{
+    float inicio, fin;
+
+    if(modo == 0){
+        inicio = 0;
+        fin = 0.5;
+    }else if(modo == 1){
+        inicio = 0.5;
+        fin = 1;
+    }
+
+    float radio;
+
+    vector<float> perfil = obtenerPerfil();
+
+    for(int i = 0; i < perfil.size(); i += 3){
+        Vector3D v(perfil[i], perfil[i + 1], perfil[i + 2]);
+        Vector3D centro(0, v.y, 0);
+
+        radio = max((v - centro).mod(), radio);
+    }
+
+    float d_x, d_z;
+
+    for(int i = 0; i < malla.vertices.size()/3; i++){
+        Vector3D v(malla.vertices[i*3], malla.vertices[i*3 + 1], malla.vertices[i*3 + 2]);
+        Vector3D centro(0, v.y, 0);
+
+        d_x = 0.25*(v.x - centro.x)/radio;
+        d_z = 0.5*(v.z - centro.z)/radio;
+
+        d_x += inicio + 0.25;
+        d_z += 0.5;
+
+        malla.setCoodenadasTextura(i, d_x, d_z);
+    }
+}
+
 ObjetoRevolucion::ObjetoRevolucion()
 {
     setModoSombreado(GL_SMOOTH);
     precision = 3;
+    num_vertices_perfil = 0;
+    tapa_superior = NULL;
+    tapa_inferior = NULL;
+}
+
+ObjetoRevolucion::~ObjetoRevolucion()
+{
+    if(tapa_superior != NULL) delete tapa_superior;
+    if(tapa_inferior != NULL) delete tapa_inferior;
 }
 
 void ObjetoRevolucion::cargar(const char *nombre_archivo_ply){
@@ -128,14 +261,76 @@ void ObjetoRevolucion::cargar(const char *nombre_archivo_ply, int precision, boo
     calcularVertices(perfil);
     calcularTriangulos(tapa_superior, tapa_inferior);
     malla.calcularNormalesVertices();
+
+    int n = num_vertices_perfil * precision;
+    for(int i = 0; i < num_vertices_perfil; i++){
+        malla.setNormal(n + i, malla.getNormal(i*precision)); // Tapa superior
+    }
+}
+
+void ObjetoRevolucion::cargarTextura(const char *nombre_archivo_jpg)
+{
+    Geometria::cargarTextura(nombre_archivo_jpg);
+    
+    vector<float> perfil = obtenerPerfil();
+
+    calcularCoordenadasTextura(perfil);
+}
+
+void ObjetoRevolucion::escalarVertices(float factor_x, float factor_y, float factor_z)
+{
+    Geometria::escalarVertices(factor_x, factor_y, factor_z);
+    if(tapa_superior != NULL) tapa_superior->escalarVertices(factor_x, factor_y, factor_z);
+    if(tapa_inferior != NULL) tapa_inferior->escalarVertices(factor_x, factor_y, factor_z);
+}
+
+void ObjetoRevolucion::setMaterialTapas(const Material &material)
+{
+    if(tapa_superior != NULL) tapa_superior->setMaterial(material);
+    if(tapa_inferior != NULL) tapa_inferior->setMaterial(material);
+}
+
+void ObjetoRevolucion::cargarTapaSuperior(const char *nombre_archivo_ply)
+{
+    tapa_superior = new ObjetoRevolucion();
+    tapa_superior->setMaterial(this->material);
+    tapa_superior->cargar(nombre_archivo_ply, precision, false, false);
+}
+
+void ObjetoRevolucion::cargarTapaInferior(const char *nombre_archivo_ply)
+{
+    tapa_inferior = new ObjetoRevolucion();
+    tapa_inferior->setMaterial(this->material);
+    tapa_inferior->cargar(nombre_archivo_ply, precision, false, false);
+}
+
+void ObjetoRevolucion::cargarTexturaTapas(const char *nombre_archivo_jpg)
+{
+    if(tapa_superior != NULL){
+        tapa_superior->Geometria::cargarTextura(nombre_archivo_jpg);
+        tapa_superior->calcularCoordenadasTextura(0);
+        if(tapa_inferior != NULL)
+            tapa_inferior->malla.id_textura = tapa_superior->malla.id_textura;
+            tapa_inferior->malla.coordenadas_textura.resize(tapa_superior->malla.coordenadas_textura.size(), 0);
+            tapa_inferior->calcularCoordenadasTextura(1);
+    }else{
+        if(tapa_inferior != NULL){
+            tapa_inferior->Geometria::cargarTextura(nombre_archivo_jpg);
+            tapa_inferior->calcularCoordenadasTextura(1);
+        }
+    }
 }
 
 void ObjetoRevolucion::draw()
 {
     this->Geometria::draw();
+    if(tapa_superior != NULL) tapa_superior->draw();
+    if(tapa_inferior != NULL) tapa_inferior->draw();
 }
 
 void ObjetoRevolucion::draw(bool draw_normales)
 {
     this->Geometria::draw(draw_normales);
+    if(tapa_superior != NULL) tapa_superior->draw(draw_normales);
+    if(tapa_inferior != NULL) tapa_inferior->draw(draw_normales);
 }

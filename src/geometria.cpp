@@ -71,3 +71,7 @@ void Geometria::calcularPuntoPivote(){
     punto_pivote.y = (min.y + max.y) / 2;
     punto_pivote.z = (min.z + max.z) / 2;
 }
+
+void Geometria::escalarVertices(float factor_x, float factor_y, float factor_z){
+    malla.escalarVertices(factor_x, factor_y, factor_z);
+}

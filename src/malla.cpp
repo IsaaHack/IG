@@ -126,6 +126,12 @@ void Malla::draw() {
 
     glEnableClientState(GL_VERTEX_ARRAY);
     glEnableClientState(GL_NORMAL_ARRAY);
+    if(id_textura != 0){
+        glEnable(GL_TEXTURE_2D);
+        glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+        glBindTexture(GL_TEXTURE_2D, id_textura);
+        glTexCoordPointer(2, GL_FLOAT, 0, &coordenadas_textura[0]);
+    }
     
     glNormalPointer(GL_FLOAT, 0, &normales[0]);
     glVertexPointer(3, GL_FLOAT, 0, &vertices[0]);
@@ -134,6 +140,10 @@ void Malla::draw() {
 
     glDisableClientState(GL_VERTEX_ARRAY);
     glDisableClientState(GL_NORMAL_ARRAY);
+    if(id_textura != 0){
+        glDisable(GL_TEXTURE_2D);
+        glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+    }
     glShadeModel(GL_FLAT);
 }
 
@@ -207,4 +217,15 @@ void Malla::asignarTextura(unsigned char *data, int width, int height){
     glBindTexture(GL_TEXTURE_2D, 0);
 
     delete[] data;
+}
+
+void Malla::escalarVertices(float x, float y, float z){
+    for(int i = 0; i < vertices.size(); i += 3){
+        vertices[i] *= x;
+        vertices[i + 1] *= y;
+        vertices[i + 2] *= z;
+    }
+
+    calcularNormalesVertices();
+    normalizarNormales();
 }

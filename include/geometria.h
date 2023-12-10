@@ -36,6 +36,8 @@ public:
     void calcularPuntoPivote();
 
     Punto3D getPuntoPivote() const;
+
+    virtual void escalarVertices(float factor_x, float factor_y, float factor_z);
 };
 
 
