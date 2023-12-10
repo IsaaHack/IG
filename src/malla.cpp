@@ -14,6 +14,7 @@ Malla::~Malla()
 }
 
 Punto3D Malla::getVertice(int i) const{
+    if(i < 0 || i >= vertices.size() / 3) return Punto3D();
     return Punto3D(vertices[i * 3], vertices[i * 3 + 1], vertices[i * 3 + 2]);
 }
 
@@ -114,6 +115,12 @@ void Malla::clear()
     vertices.clear();
     caras.clear();
     normales.clear();
+    coordenadas_textura.clear();
+
+    if(id_textura != 0){
+        glDeleteTextures(1, &id_textura);
+        id_textura = 0;
+    }
 }
 
 void Malla::draw() {
@@ -163,18 +170,42 @@ void Malla::drawSmooth(bool draw_normales)
 {
     glShadeModel(GL_SMOOTH);
 
+    if(id_textura != 0){
+        glEnable(GL_TEXTURE_2D);
+        glBindTexture(GL_TEXTURE_2D, id_textura);
+    }
+
     glBegin(GL_TRIANGLES);
     {
-        for(int i = 0; i < caras.size(); i += 3){
-            glNormal3f(normales[caras[i] * 3], normales[caras[i] * 3 + 1], normales[caras[i] * 3 + 2]);
-            glVertex3f(vertices[caras[i] * 3], vertices[caras[i] * 3 + 1], vertices[caras[i] * 3 + 2]);
-            glNormal3f(normales[caras[i + 1] * 3], normales[caras[i + 1] * 3 + 1], normales[caras[i + 1] * 3 + 2]);
-            glVertex3f(vertices[caras[i + 1] * 3], vertices[caras[i + 1] * 3 + 1], vertices[caras[i + 1] * 3 + 2]);
-            glNormal3f(normales[caras[i + 2] * 3], normales[caras[i + 2] * 3 + 1], normales[caras[i + 2] * 3 + 2]);
-            glVertex3f(vertices[caras[i + 2] * 3], vertices[caras[i + 2] * 3 + 1], vertices[caras[i + 2] * 3 + 2]);
+        if(id_textura != 0){ // Si hay textura
+            for(int i = 0; i < caras.size(); i += 3){
+                glNormal3f(normales[caras[i] * 3], normales[caras[i] * 3 + 1], normales[caras[i] * 3 + 2]);
+                glTexCoord2f(coordenadas_textura[caras[i] * 2], coordenadas_textura[caras[i] * 2 + 1]);
+                glVertex3f(vertices[caras[i] * 3], vertices[caras[i] * 3 + 1], vertices[caras[i] * 3 + 2]);
+                glNormal3f(normales[caras[i + 1] * 3], normales[caras[i + 1] * 3 + 1], normales[caras[i + 1] * 3 + 2]);
+                glTexCoord2f(coordenadas_textura[caras[i + 1] * 2], coordenadas_textura[caras[i + 1] * 2 + 1]);
+                glVertex3f(vertices[caras[i + 1] * 3], vertices[caras[i + 1] * 3 + 1], vertices[caras[i + 1] * 3 + 2]);
+                glNormal3f(normales[caras[i + 2] * 3], normales[caras[i + 2] * 3 + 1], normales[caras[i + 2] * 3 + 2]);
+                glTexCoord2f(coordenadas_textura[caras[i + 2] * 2], coordenadas_textura[caras[i + 2] * 2 + 1]);
+                glVertex3f(vertices[caras[i + 2] * 3], vertices[caras[i + 2] * 3 + 1], vertices[caras[i + 2] * 3 + 2]);
+            }
+        }else{ // Si no hay textura
+            for(int i = 0; i < caras.size(); i += 3){
+                glNormal3f(normales[caras[i] * 3], normales[caras[i] * 3 + 1], normales[caras[i] * 3 + 2]);
+                glVertex3f(vertices[caras[i] * 3], vertices[caras[i] * 3 + 1], vertices[caras[i] * 3 + 2]);
+                glNormal3f(normales[caras[i + 1] * 3], normales[caras[i + 1] * 3 + 1], normales[caras[i + 1] * 3 + 2]);
+                glVertex3f(vertices[caras[i + 1] * 3], vertices[caras[i + 1] * 3 + 1], vertices[caras[i + 1] * 3 + 2]);
+                glNormal3f(normales[caras[i + 2] * 3], normales[caras[i + 2] * 3 + 1], normales[caras[i + 2] * 3 + 2]);
+                glVertex3f(vertices[caras[i + 2] * 3], vertices[caras[i + 2] * 3 + 1], vertices[caras[i + 2] * 3 + 2]);
+            }
         }
     }
     glEnd();
+
+    if(id_textura != 0){
+        glBindTexture(GL_TEXTURE_2D, 0);
+        glDisable(GL_TEXTURE_2D);
+    }
 
     glShadeModel(GL_FLAT);
 
@@ -185,17 +216,41 @@ void Malla::drawFlat(bool draw_normales)
 {
     glShadeModel(GL_FLAT);
 
+    if(id_textura != 0){
+        glEnable(GL_TEXTURE_2D);
+        glBindTexture(GL_TEXTURE_2D, id_textura);
+    }
+
     glBegin(GL_TRIANGLES);
     {
-        for(int i = 0; i < caras.size(); i += 3){
-            Vector3D normal = getCara(i / 3).getNormal().obtenerNormalizado();
-            glNormal3f(normal.x, normal.y, normal.z);
-            glVertex3f(vertices[caras[i] * 3], vertices[caras[i] * 3 + 1], vertices[caras[i] * 3 + 2]);
-            glVertex3f(vertices[caras[i + 1] * 3], vertices[caras[i + 1] * 3 + 1], vertices[caras[i + 1] * 3 + 2]);
-            glVertex3f(vertices[caras[i + 2] * 3], vertices[caras[i + 2] * 3 + 1], vertices[caras[i + 2] * 3 + 2]);
+        if(id_textura != 0){ // Si hay textura
+            for(int i = 0; i < caras.size(); i += 3){
+                Vector3D normal = getCara(i / 3).getNormal().obtenerNormalizado();
+                glNormal3f(normal.x, normal.y, normal.z);
+                glTexCoord2f(coordenadas_textura[caras[i] * 2], coordenadas_textura[caras[i] * 2 + 1]);
+                glVertex3f(vertices[caras[i] * 3], vertices[caras[i] * 3 + 1], vertices[caras[i] * 3 + 2]);
+                glTexCoord2f(coordenadas_textura[caras[i + 1] * 2], coordenadas_textura[caras[i + 1] * 2 + 1]);
+                glVertex3f(vertices[caras[i + 1] * 3], vertices[caras[i + 1] * 3 + 1], vertices[caras[i + 1] * 3 + 2]);
+                glTexCoord2f(coordenadas_textura[caras[i + 2] * 2], coordenadas_textura[caras[i + 2] * 2 + 1]);
+                glVertex3f(vertices[caras[i + 2] * 3], vertices[caras[i + 2] * 3 + 1], vertices[caras[i + 2] * 3 + 2]);
+            }
+        }else{ // Si no hay textura
+            for(int i = 0; i < caras.size(); i += 3){
+                Vector3D normal = getCara(i / 3).getNormal().obtenerNormalizado();
+                glNormal3f(normal.x, normal.y, normal.z);
+                glVertex3f(vertices[caras[i] * 3], vertices[caras[i] * 3 + 1], vertices[caras[i] * 3 + 2]);
+                glVertex3f(vertices[caras[i + 1] * 3], vertices[caras[i + 1] * 3 + 1], vertices[caras[i + 1] * 3 + 2]);
+                glVertex3f(vertices[caras[i + 2] * 3], vertices[caras[i + 2] * 3 + 1], vertices[caras[i + 2] * 3 + 2]);
+            }
         }
+
     }
     glEnd();
+
+    if(id_textura != 0){
+        glBindTexture(GL_TEXTURE_2D, 0);
+        glDisable(GL_TEXTURE_2D);
+    }
 
     if(draw_normales) drawNormalesCaras();
 }

@@ -3,11 +3,14 @@
 
 #include "geometria.h"
 
+#define MAX_PRECISION 1000
+#define MIN_PRECISION 3
+
 /**
  * @brief Clase que representa un objeto de revolución
  * @details Un objeto de revolución se crea a partir de un perfil y una precisión
- * @details Hereda de Malla
- * @see Malla
+ * @details Hereda de Geometria
+ * @see Geometria
 */
 class ObjetoRevolucion : public Geometria{
     protected:
@@ -41,16 +44,26 @@ class ObjetoRevolucion : public Geometria{
         */
         void verificarPerfil(vector<float> &perfil) const;
 
+        /**
+         * @brief Obtiene el perfil de la malla
+         * @return Vector con los puntos del perfil
+        */
         vector<float> obtenerPerfil();
 
+        /**
+         * @brief Calcula las coordenadas de textura de la malla a partir de un perfil
+         * @param perfil Vector con los puntos del perfil
+         * @pre perfil.size() > 1
+         * @post perfil no se modifica
+        */
         void calcularCoordenadasTextura(const vector<float> &perfil);
 
         /**
-         * @brief Carga una textura a partir de un archivo JPG con un modo de dibujado dado
-         * @param modo Modo de dibujado
+         * @brief Calcula las coordenadas de textura de la malla (especialmente para las tapas)
+         * @param modo Modo de calculo de las coordenadas de textura
          * @pre modo == 0 (para tapa_superior) || modo == 1 (para tapa_inferior)
         */
-        virtual void calcularCoordenadasTextura(int modo);
+        void calcularCoordenadasTexturaTapas(int modo);
     public:
         /**
          * @brief Constructor por defecto

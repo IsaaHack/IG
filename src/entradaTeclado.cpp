@@ -68,6 +68,9 @@ void printHelp()
   printf("e, E: Giro a la derecha\n");
   printf("espacio: Subir el helicóptero\n");
   printf("c, C: Bajar el helicóptero\n");
+  // Opciones de las luces
+  printf("1: Activa/desactiva la luz 1\n");
+  printf("2: Activa/desactiva la luz 2\n");
   //Final
   printf("\n Escape: Salir");
   printf("\n\n\n");
@@ -165,6 +168,12 @@ void letra(unsigned char k, int x, int y)
     break;
   case '-': // aleja la cámara
     dCamara += 5.0;
+    break;
+  case '1':
+    switchLuz(0);
+    break;
+  case '2':
+    switchLuz(1);
     break;
   case 27: // Escape  Terminar
     exit(0);

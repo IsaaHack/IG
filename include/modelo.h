@@ -65,4 +65,6 @@ void cambiarCamara();
 
 int getCamara();
 
+void switchLuz(int luz);
+
 #endif

@@ -3,7 +3,7 @@
 
 #include "objeto3D.h"
 #include "time.h"
-
+#include "material.h"
 
 class FiguraAnimada : public Objeto3D {
 private:

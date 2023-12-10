@@ -3,6 +3,12 @@
 
 #include "geometria.h"
 
+/**
+ * @brief Clase que representa un objeto cargado desde un archivo PLY
+ * @details Esta clase hereda de la clase Geometria
+ * @see Geometria
+*/
+
 class ObjetoPLY : public Geometria{
 public:
     /**

@@ -186,19 +186,15 @@ void ObjetoRevolucion::calcularCoordenadasTextura(const vector<float> &perfil)
 
 }
 
-void ObjetoRevolucion::calcularCoordenadasTextura(int modo)
+void ObjetoRevolucion::calcularCoordenadasTexturaTapas(int modo)
 {
-    float inicio, fin;
+    float inicio = 0;
 
-    if(modo == 0){
-        inicio = 0;
-        fin = 0.5;
-    }else if(modo == 1){
-        inicio = 0.5;
-        fin = 1;
-    }
+    if(modo == 0) inicio = 0;
+    else if(modo == 1) inicio = 0.5;
+    else return;
 
-    float radio;
+    float radio = 0;
 
     vector<float> perfil = obtenerPerfil();
 
@@ -209,7 +205,8 @@ void ObjetoRevolucion::calcularCoordenadasTextura(int modo)
         radio = max((v - centro).mod(), radio);
     }
 
-    float d_x, d_z;
+    float d_x = 0;
+    float d_z = 0;
 
     for(int i = 0; i < malla.vertices.size()/3; i++){
         Vector3D v(malla.vertices[i*3], malla.vertices[i*3 + 1], malla.vertices[i*3 + 2]);
@@ -228,7 +225,7 @@ void ObjetoRevolucion::calcularCoordenadasTextura(int modo)
 ObjetoRevolucion::ObjetoRevolucion()
 {
     setModoSombreado(GL_SMOOTH);
-    precision = 3;
+    precision = MIN_PRECISION;
     num_vertices_perfil = 0;
     tapa_superior = NULL;
     tapa_inferior = NULL;
@@ -251,10 +248,10 @@ void ObjetoRevolucion::cargar(const char *nombre_archivo_ply, int precision, boo
 
     num_vertices_perfil = perfil.size() / 3;
 
-    if(precision >= 3 && precision < 100)
+    if(precision >= MIN_PRECISION && precision < MAX_PRECISION)
         this->precision = precision;
-    else if(precision >= 100)
-        this->precision = 100;
+    else if(precision >= MAX_PRECISION)
+        this->precision = MAX_PRECISION;
 
 
     verificarPerfil(perfil);
@@ -262,9 +259,10 @@ void ObjetoRevolucion::cargar(const char *nombre_archivo_ply, int precision, boo
     calcularTriangulos(tapa_superior, tapa_inferior);
     malla.calcularNormalesVertices();
 
-    int n = num_vertices_perfil * precision;
+    int n = num_vertices_perfil * this->precision;
+    //Asignar normales a los puntos de la costura
     for(int i = 0; i < num_vertices_perfil; i++){
-        malla.setNormal(n + i, malla.getNormal(i*precision)); // Tapa superior
+        malla.setNormal(n + i, malla.getNormal(i*this->precision));
     }
 }
 
@@ -308,15 +306,15 @@ void ObjetoRevolucion::cargarTexturaTapas(const char *nombre_archivo_jpg)
 {
     if(tapa_superior != NULL){
         tapa_superior->Geometria::cargarTextura(nombre_archivo_jpg);
-        tapa_superior->calcularCoordenadasTextura(0);
+        tapa_superior->calcularCoordenadasTexturaTapas(0);
         if(tapa_inferior != NULL)
             tapa_inferior->malla.id_textura = tapa_superior->malla.id_textura;
             tapa_inferior->malla.coordenadas_textura.resize(tapa_superior->malla.coordenadas_textura.size(), 0);
-            tapa_inferior->calcularCoordenadasTextura(1);
+            tapa_inferior->calcularCoordenadasTexturaTapas(1);
     }else{
         if(tapa_inferior != NULL){
             tapa_inferior->Geometria::cargarTextura(nombre_archivo_jpg);
-            tapa_inferior->calcularCoordenadasTextura(1);
+            tapa_inferior->calcularCoordenadasTexturaTapas(1);
         }
     }
 }

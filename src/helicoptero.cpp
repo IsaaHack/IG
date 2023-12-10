@@ -208,6 +208,9 @@ void Helicoptero::actualizar()
     r_giro.setAngulo(giro_giro);
     r_alabeo.setAngulo(-giro_alabeo);
     r_cabeceo.setAngulo(-giro_cabeceo);
+
+    // Actualiza el controlador
+    controlador.actualizar();
 }
 
 void Helicoptero::draw()

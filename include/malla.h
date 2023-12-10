@@ -152,8 +152,27 @@ public:
     */
     virtual void drawFlat(bool draw_normales = false);
 
+    /**
+     * @brief Asigna una textura a la malla
+     * @param data Datos de la textura
+     * @param width Ancho de la textura
+     * @param height Alto de la textura
+     * @post El objeto es modificado
+     * @post La textura es asignada a la malla
+     * @post El identificador de textura es modificado
+    */
     virtual void asignarTextura(unsigned char *data, int width, int height);
 
+    /**
+     * @brief Escala los vértices de la malla
+     * @param x Escala en el eje x
+     * @param y Escala en el eje y
+     * @param z Escala en el eje z
+     * @post El objeto es modificado
+     * @post Los vértices de la malla son escalados
+     * @post Las normales de los vértices son recalculadas
+     * @post Las normales de los vértices son normalizadas
+    */
     virtual void escalarVertices(float x, float y, float z);
 };
 

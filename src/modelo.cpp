@@ -42,28 +42,46 @@ modulo modelo.c
 #include "helicoptero.h"
 #include "aspas.h"
 #include "suelo.h"
+#include "cubo.h"
+#include "luz.h"
 
 int modo, modo_ejecucion;
 bool iluminacion, normales;
+int camara = 0;
+
 Ejes ejesCoordenadas;
+Objeto3D root_scene;
+
 ObjetoPLY objeto_load;
 ObjetoRevolucion objeto_spin;
+
 Helicoptero helicoptero;
 ControladorHelicoptero* controlador = helicoptero.getControlador();
 Aspas aspas(100.0,360.0*10.0);
 Suelo suelo;
-int camara = 0;
-Cubo dado;
-Material material_dado, material_lata, material_tapas;
+
+Cubo dado, cubo1, cubo2, cubo3;
 ObjetoRevolucion lata;
-Objeto3D root_scene;
-Traslacion t1(Vector3D(3, 0, 0));
+
+Traslacion t1(Vector3D(1.5, 0, 0)), t2(Vector3D(0, 0, 3)), t3(Vector3D(-3.5, 0, 0)), t4(Vector3D(1.5, 0, 0));
+
+Luz luz0(GL_LIGHT0), luz1(GL_LIGHT1);
+
+GLfloat pos_luz0[4] = {5.0, 5.0, 10.0, 0.0}; // Posicion de la fuente de luz 0
+GLfloat color_luz0_ambiental[4] = {0.1, 0.1, 0.4, 1.0}; // Color especular de la fuente de luz 1 (azul)
+GLfloat color_luz0_especular[4] = {0.1, 0.1, 1.0, 1.0}; // Color especular de la fuente de luz 1 (azul)
+GLfloat color_luz0_difusa[4] = {0.6, 0.2, 1.0, 1.0}; // Color difuso de la fuente de luz 1 (azul)
+
+GLfloat pos_luz1[4] = {-5.0, -5.0, 0.0, 0.0}; // Posicion de la fuente de luz 1
+GLfloat color_luz1_especular[4] = {0.1, 1.0, 0.3, 1.0}; // Color especular de la fuente de luz 1 (verde)
+GLfloat color_luz1_difusa[4] = {0.4, 1.0, 0.2, 1.0}; // Color difuso de la fuente de luz 1 (verde)
+
+Material material_dado, material_lata, material_tapas, m_cubo1, m_cubo2, m_cubo3;
 
 
 /**	void initModel()
 
 Inicializa el modelo y de las variables globales
-
 
 **/
 void initModel(int modo_ejec, char *ruta_ply)
@@ -73,6 +91,15 @@ void initModel(int modo_ejec, char *ruta_ply)
   normales = false;
   glPolygonMode(GL_FRONT_AND_BACK, modo);
   modo_ejecucion = modo_ejec;
+
+  luz0.setPosicion(pos_luz0[0], pos_luz0[1], pos_luz0[2]);
+  luz0.setColorAmbiental(color_luz0_ambiental[0], color_luz0_ambiental[1], color_luz0_ambiental[2]);
+  luz0.setColorEspecular(color_luz0_especular[0], color_luz0_especular[1], color_luz0_especular[2]);
+  luz0.setColorDifuso(color_luz0_difusa[0], color_luz0_difusa[1], color_luz0_difusa[2]);
+
+  luz1.setPosicion(pos_luz1[0], pos_luz1[1], pos_luz1[2]);
+  luz1.setColorEspecular(color_luz1_especular[0], color_luz1_especular[1], color_luz1_especular[2]);
+  luz1.setColorDifuso(color_luz1_difusa[0], color_luz1_difusa[1], color_luz1_difusa[2]);
 
   material_dado.setColorAmbiental(1, 1, 1, 1);
   material_dado.setColorDifuso(1, 1, 1, 1);
@@ -89,6 +116,27 @@ void initModel(int modo_ejec, char *ruta_ply)
   material_tapas.setColorEspecular(1, 1, 1, 1);
   material_tapas.setExponenteBrillo(100);
 
+  m_cubo1.setColorAmbiental(0.1, 0.3, 0.7, 1);
+  m_cubo1.setColorDifuso(0.4, 1.0, 0.7, 1);
+  m_cubo1.setColorEspecular(0.7, 0.9, 0.0, 1);
+  m_cubo1.setExponenteBrillo(48);
+
+  m_cubo2.setColorAmbiental(0.1, 0.5, 0.1, 1);
+  m_cubo2.setColorDifuso(0.0, 0.3, 0.9, 1);
+  m_cubo2.setColorEspecular(0.2, 0.2, 0.2, 1);
+  m_cubo2.setExponenteBrillo(16);
+
+  m_cubo3.setColorAmbiental(0.4, 0.2, 0.1, 1);
+  m_cubo3.setColorDifuso(0.6, 0.4, 0.2, 1);
+  m_cubo3.setColorEspecular(0.8, 0.9, 0.6, 1);
+  m_cubo3.setExponenteBrillo(64);
+
+  luz0.activar();
+  luz1.activar();
+
+  root_scene.addHijo(&luz0);
+  root_scene.addHijo(&luz1);
+
   if(modo_ejecucion == LOAD){// Cargo el objeto que entra por parámetro
     root_scene.addHijo(&objeto_load);
     objeto_load.cargar(ruta_ply);
@@ -96,23 +144,42 @@ void initModel(int modo_ejec, char *ruta_ply)
     root_scene.addHijo(&objeto_spin);
     objeto_spin.cargar(ruta_ply);
   }else{// Inicializamos los objetos de la escena
+    root_scene.addHijo(&helicoptero);
+    root_scene.addHijo(&t2);
     root_scene.addHijo(&lata);
     root_scene.addHijo(&t1);
     root_scene.addHijo(&dado);
+    root_scene.addHijo(&t2);
+    root_scene.addHijo(&t3);
+    root_scene.addHijo(&cubo1);
+    root_scene.addHijo(&t4);
+    root_scene.addHijo(&cubo2);
+    root_scene.addHijo(&t4);
+    root_scene.addHijo(&cubo3);
 
-    //helicoptero.cargar("./plys/heli.ply", "./plys/helices.ply");
-    lata.cargar("./plys/lata-pcue.ply", 100, false, false);
+    helicoptero.cargar("./plys/heli.ply", "./plys/helices.ply");
+
+    lata.cargar("./plys/lata-pcue.ply", 50, false, false);
     lata.setMaterial(material_lata);
     lata.cargarTapaInferior("./plys/lata-pinf.ply");
     lata.cargarTapaSuperior("./plys/lata-psup.ply");
     lata.cargarTexturaTapas("./textures/tapas.jpg");
-    lata.escalarVertices(5, 5, 5);
+    lata.escalarVertices(2, 2, 2);
     lata.setMaterialTapas(material_tapas);
     lata.cargarTextura("./textures/coke.jpg");
 
     dado.setModoSombreado(GL_FLAT);
     dado.setMaterial(material_dado);
     dado.cargarTextura("./textures/dado.jpg");
+
+    cubo1.setModoSombreado(GL_FLAT);
+    cubo1.setMaterial(m_cubo1);
+
+    cubo2.setModoSombreado(GL_FLAT);
+    cubo2.setMaterial(m_cubo2);
+
+    cubo3.setModoSombreado(GL_FLAT);
+    cubo3.setMaterial(m_cubo3);
   }
 
   camara = 0;
@@ -165,6 +232,23 @@ int getCamara(){
   return camara;
 }
 
+void switchLuz(int luz){
+  if(luz == 0){
+    if(luz0.getActivada()){
+      luz0.desactivar();
+    }else{
+      luz0.activar();
+    }
+  }else if(luz == 1){
+    if(luz1.getActivada()){
+      luz1.desactivar();
+    }else{
+      luz1.activar();
+    }
+  }
+  glutPostRedisplay();
+}
+
 /**	void Dibuja( void )
 
 Procedimiento de dibujo del modelo. Es llamado por glut cada vez que se debe redibujar.
@@ -172,7 +256,6 @@ Procedimiento de dibujo del modelo. Es llamado por glut cada vez que se debe red
 **/
 void Dibuja(void)
 {
-  static GLfloat pos[4] = {5.0, 5.0, 10.0, 0.0}; // Posicion de la fuente de luz
 
   float color[4] = {0.8, 0.0, 0.1, 1};
   float color2[4] = {1, 0.5, 0.3, 1};
@@ -188,7 +271,7 @@ void Dibuja(void)
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // Inicializa el buffer de color y el Z-Buffer
 
   //aspas.actualizar();
-  //helicoptero.actualizar();
+  helicoptero.actualizar();
 
   if(camara == 0){
     transformacionVisualizacion(); // Carga transformacion de visualizacion
@@ -198,8 +281,7 @@ void Dibuja(void)
     transformaciónVisualizacion2(-helicoptero.getGiroHelicoptero());
   }
   
-
-  glLightfv(GL_LIGHT0, GL_POSITION, pos); // Declaracion de luz. Colocada aqui esta fija en la escena
+  //glLightfv(GL_LIGHT0, GL_POSITION, pos); // Declaracion de luz. Colocada aqui esta fija en la escena
 
   ejesCoordenadas.draw(); // Dibuja los ejes
 
