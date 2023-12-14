@@ -61,9 +61,9 @@ Aspas aspas(100.0,360.0*10.0);
 Suelo suelo;
 
 Cubo dado, cubo1, cubo2, cubo3;
-ObjetoRevolucion lata;
+ObjetoRevolucion lata, peon, peon1, peon2, peon3;
 
-Traslacion t1(Vector3D(1.5, 0, 0)), t2(Vector3D(0, 0, 3)), t3(Vector3D(-3.5, 0, 0)), t4(Vector3D(1.5, 0, 0));
+Traslacion t1(Vector3D(1.5, 0, 0)), t2(Vector3D(0, 0, 3)), t3(Vector3D(-3.5, 0, 0)), t4(Vector3D(2, 0, 0));
 
 Luz luz0(GL_LIGHT0), luz1(GL_LIGHT1);
 
@@ -93,13 +93,13 @@ void initModel(int modo_ejec, char *ruta_ply)
   modo_ejecucion = modo_ejec;
 
   luz0.setPosicion(pos_luz0[0], pos_luz0[1], pos_luz0[2]);
-  luz0.setColorAmbiental(color_luz0_ambiental[0], color_luz0_ambiental[1], color_luz0_ambiental[2]);
-  luz0.setColorEspecular(color_luz0_especular[0], color_luz0_especular[1], color_luz0_especular[2]);
-  luz0.setColorDifuso(color_luz0_difusa[0], color_luz0_difusa[1], color_luz0_difusa[2]);
+  //luz0.setColorAmbiental(color_luz0_ambiental[0], color_luz0_ambiental[1], color_luz0_ambiental[2]);
+  //luz0.setColorEspecular(color_luz0_especular[0], color_luz0_especular[1], color_luz0_especular[2]);
+  //luz0.setColorDifuso(color_luz0_difusa[0], color_luz0_difusa[1], color_luz0_difusa[2]);
 
   luz1.setPosicion(pos_luz1[0], pos_luz1[1], pos_luz1[2]);
-  luz1.setColorEspecular(color_luz1_especular[0], color_luz1_especular[1], color_luz1_especular[2]);
-  luz1.setColorDifuso(color_luz1_difusa[0], color_luz1_difusa[1], color_luz1_difusa[2]);
+  //luz1.setColorEspecular(color_luz1_especular[0], color_luz1_especular[1], color_luz1_especular[2]);
+  //luz1.setColorDifuso(color_luz1_difusa[0], color_luz1_difusa[1], color_luz1_difusa[2]);
 
   material_dado.setColorAmbiental(1, 1, 1, 1);
   material_dado.setColorDifuso(1, 1, 1, 1);
@@ -116,23 +116,24 @@ void initModel(int modo_ejec, char *ruta_ply)
   material_tapas.setColorEspecular(1, 1, 1, 1);
   material_tapas.setExponenteBrillo(100);
 
-  m_cubo1.setColorAmbiental(0.1, 0.3, 0.7, 1);
-  m_cubo1.setColorDifuso(0.4, 1.0, 0.7, 1);
-  m_cubo1.setColorEspecular(0.7, 0.9, 0.0, 1);
-  m_cubo1.setExponenteBrillo(48);
+  m_cubo1.setColorAmbiental(0.0, 0.2, 0.0, 1);
+  m_cubo1.setColorDifuso(0.0, 0.2, 0.0, 1);
+  //m_cubo1.setColorEspecular(0.7, 0.9, 0.0, 1);
+  //m_cubo1.setExponenteBrillo(48);
 
-  m_cubo2.setColorAmbiental(0.1, 0.5, 0.1, 1);
-  m_cubo2.setColorDifuso(0.0, 0.3, 0.9, 1);
-  m_cubo2.setColorEspecular(0.2, 0.2, 0.2, 1);
+  m_cubo2.setColorAmbiental(0.1, 0.1, 0.2, 1);
+  m_cubo2.setColorDifuso(0.1, 0.1, 0.2, 1);
+  m_cubo2.setColorEspecular(1, 1, 1, 1);
   m_cubo2.setExponenteBrillo(16);
 
-  m_cubo3.setColorAmbiental(0.4, 0.2, 0.1, 1);
-  m_cubo3.setColorDifuso(0.6, 0.4, 0.2, 1);
-  m_cubo3.setColorEspecular(0.8, 0.9, 0.6, 1);
+  m_cubo3.setColorAmbiental(0.2, 0.0, 0.0, 1);
+  m_cubo3.setColorDifuso(0.2, 0.0, 0.0, 1);
+  //m_cubo3.setColorEspecular(0.0, 0.9, 0.6, 1);
+  m_cubo3.setColorEmision(1.0, 0.0, 0.0, 1);
   m_cubo3.setExponenteBrillo(64);
 
   luz0.activar();
-  luz1.activar();
+  luz1.desactivar();
 
   root_scene.addHijo(&luz0);
   root_scene.addHijo(&luz1);
@@ -144,18 +145,19 @@ void initModel(int modo_ejec, char *ruta_ply)
     root_scene.addHijo(&objeto_spin);
     objeto_spin.cargar(ruta_ply);
   }else{// Inicializamos los objetos de la escena
-    root_scene.addHijo(&helicoptero);
-    root_scene.addHijo(&t2);
+    //root_scene.addHijo(&helicoptero);
     root_scene.addHijo(&lata);
+    root_scene.addHijo(&t2);
+    root_scene.addHijo(&peon);
     root_scene.addHijo(&t1);
     root_scene.addHijo(&dado);
     root_scene.addHijo(&t2);
     root_scene.addHijo(&t3);
-    root_scene.addHijo(&cubo1);
+    root_scene.addHijo(&peon1);
     root_scene.addHijo(&t4);
-    root_scene.addHijo(&cubo2);
+    root_scene.addHijo(&peon2);
     root_scene.addHijo(&t4);
-    root_scene.addHijo(&cubo3);
+    root_scene.addHijo(&peon3);
 
     helicoptero.cargar("./plys/heli.ply", "./plys/helices.ply");
 
@@ -164,22 +166,26 @@ void initModel(int modo_ejec, char *ruta_ply)
     lata.cargarTapaInferior("./plys/lata-pinf.ply");
     lata.cargarTapaSuperior("./plys/lata-psup.ply");
     lata.cargarTexturaTapas("./textures/tapas.jpg");
-    lata.escalarVertices(2, 2, 2);
+    lata.escalarVertices(5, 5, 5);
     lata.setMaterialTapas(material_tapas);
     lata.cargarTextura("./textures/coke.jpg");
+
+    peon.cargar("./plys/perfil.ply", 50, false, false);
+    peon.setMaterial(material_lata);
+    peon.cargarTextura("./textures/s_textura_test.jpg");
 
     dado.setModoSombreado(GL_FLAT);
     dado.setMaterial(material_dado);
     dado.cargarTextura("./textures/dado.jpg");
 
-    cubo1.setModoSombreado(GL_FLAT);
-    cubo1.setMaterial(m_cubo1);
+    peon1.cargar("./plys/perfil.ply", 50, true, true);
+    peon1.setMaterial(m_cubo1);
 
-    cubo2.setModoSombreado(GL_FLAT);
-    cubo2.setMaterial(m_cubo2);
+    peon2.cargar("./plys/perfil.ply", 50, true, true);
+    peon2.setMaterial(m_cubo2);
 
-    cubo3.setModoSombreado(GL_FLAT);
-    cubo3.setMaterial(m_cubo3);
+    peon3.cargar("./plys/perfil.ply", 50, true, true);
+    peon3.setMaterial(m_cubo3);
   }
 
   camara = 0;

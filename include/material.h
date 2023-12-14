@@ -12,6 +12,7 @@ private:
     GLfloat color_ambiental[4]; // Color ambiental
     GLfloat color_difuso[4]; // Color difuso
     GLfloat color_especular[4]; // Color especular
+    GLfloat color_emision[4]; // Color emisión
     GLfloat exponente_brillo; // Exponente de brillo
     GLfloat indice_refraccion; // Índice de refracción
 public:
@@ -63,6 +64,15 @@ public:
      * @param a Componente alfa
      */
     void setColorEspecular(GLfloat r, GLfloat g, GLfloat b, GLfloat a);
+
+    /**
+     * @brief Establece el color emisión
+     * @param r Componente roja
+     * @param g Componente verde
+     * @param b Componente azul
+     * @param a Componente alfa
+     */
+    void setColorEmision(GLfloat r, GLfloat g, GLfloat b, GLfloat a);
 
     /**
      * @brief Establece el exponente de brillo

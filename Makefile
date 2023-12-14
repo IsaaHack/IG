@@ -103,7 +103,7 @@ clean:
 	rm -f $(MODULOS) $(EJECUTABLE)
 
 zip: clean
-	zip -r practicasIG.zip ./*
+	zip -r IG_practica$(X)_Isaac_Brao_C2.zip ./*
 
 organize:
 	mkdir -p include src build bin

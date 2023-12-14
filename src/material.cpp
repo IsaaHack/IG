@@ -5,12 +5,14 @@ Material::Material(){
     GLfloat colorAmbiente[4] = {1, 0.2, 0.4, 1.0};
     GLfloat colorDifuso[4] = {1, 0.2, 0.4, 1.0};
     GLfloat colorEspecular[4] = {0.0, 0.0, 0.0, 0.0};
+    GLfloat colorEmison[4] = {0.0, 0.0, 0.0, 0.0};
     GLfloat exponenteBrillo = 100.0;
     GLfloat indiceRefraccion = 0.0;
 
     setColorAmbiental(colorAmbiente[0], colorAmbiente[1], colorAmbiente[2], colorAmbiente[3]);
     setColorDifuso(colorDifuso[0], colorDifuso[1], colorDifuso[2], colorDifuso[3]);
     setColorEspecular(colorEspecular[0], colorEspecular[1], colorEspecular[2], colorEspecular[3]);
+    setColorEmision(colorEmison[0], colorEmison[1], colorEmison[2], colorEmison[3]);
     setExponenteBrillo(exponenteBrillo);
     setIndiceRefraccion(indiceRefraccion);
 }
@@ -52,6 +54,13 @@ void Material::setColorEspecular(GLfloat r, GLfloat g, GLfloat b, GLfloat a){
     color_especular[3] = a;
 }
 
+void Material::setColorEmision(GLfloat r, GLfloat g, GLfloat b, GLfloat a){
+    color_emision[0] = r;
+    color_emision[1] = g;
+    color_emision[2] = b;
+    color_emision[3] = a;
+}
+
 void Material::setExponenteBrillo(GLfloat exponente_brillo){
     this->exponente_brillo = exponente_brillo;
 }
@@ -65,6 +74,7 @@ void Material::draw()
     glMaterialfv(GL_FRONT, GL_AMBIENT, color_ambiental);
     glMaterialfv(GL_FRONT, GL_DIFFUSE, color_difuso);
     glMaterialfv(GL_FRONT, GL_SPECULAR, color_especular);
+    glMaterialfv(GL_FRONT, GL_EMISSION, color_emision);
     glMaterialf(GL_FRONT, GL_SHININESS, exponente_brillo);
     glMaterialf(GL_FRONT, GL_INDEX, indice_refraccion);
 
