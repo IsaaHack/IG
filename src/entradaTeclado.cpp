@@ -33,6 +33,7 @@ modulo entradaTeclado.c
 #include <GL/glut.h> // Libreria de utilidades de OpenGL
 #include "practicasIG.h"
 #include "helicoptero.h"
+#include "visual.h"
 
 /**
 
@@ -106,34 +107,54 @@ void letra(unsigned char k, int x, int y)
   {
   case 'w':
   case 'W':
-    getControlador()->irAlante();
+    if(GestorCamaras::getInstancia()->getIdCamaraActiva() == 1)
+      getControlador()->irAlante();
+    else GestorCamaras::getInstancia()->getCamaraActiva()->avanzar(1.0);
     break;
   case 's':
   case 'S':
-    getControlador()->irAtras();
+    if(GestorCamaras::getInstancia()->getIdCamaraActiva() == 1)
+      getControlador()->irAtras();
+    else GestorCamaras::getInstancia()->getCamaraActiva()->retroceder(1.0);
     break;
   case 'a':
   case 'A':
-    getControlador()->alabeoIzquierda();
+    if(GestorCamaras::getInstancia()->getIdCamaraActiva() == 1)
+      getControlador()->alabeoIzquierda();
+    else GestorCamaras::getInstancia()->getCamaraActiva()->izquierda(1.0);
     break;
   case 'd':
   case 'D':
-    getControlador()->alabeoDerecha();
+    if(GestorCamaras::getInstancia()->getIdCamaraActiva() == 1)
+      getControlador()->alabeoDerecha();
+    else GestorCamaras::getInstancia()->getCamaraActiva()->derecha(1.0);
+    break;
+  case 'r':
+  case 'R':
+    if(GestorCamaras::getInstancia()->getIdCamaraActiva() == 0){
+      GestorCamaras::getInstancia()->getCamaraActiva()->setCamara(Punto3D(0, 0, 10), Punto3D(0, 0, 0));
+      GestorCamaras::getInstancia()->getCamaraActiva()->rotarX(45);
+      GestorCamaras::getInstancia()->getCamaraActiva()->rotarY(30);
+    }
     break;
   case 'q':
   case 'Q':
-    getControlador()->giroIzquierda();
+    if(GestorCamaras::getInstancia()->getIdCamaraActiva() == 1)
+      getControlador()->giroIzquierda();
     break;
   case 'e':
   case 'E':
-    getControlador()->giroDerecha();
+    if(GestorCamaras::getInstancia()->getIdCamaraActiva() == 1)
+      getControlador()->giroDerecha();
     break;
   case ' ':
-    getControlador()->subirHelicoptero();
+    if(GestorCamaras::getInstancia()->getIdCamaraActiva() == 1)
+      getControlador()->subirHelicoptero();
     break;
   case 'c':
   case 'C':
-    getControlador()->bajarHelicoptero();
+    if(GestorCamaras::getInstancia()->getIdCamaraActiva() == 1)
+      getControlador()->bajarHelicoptero();
     break;
   case 'p':
   case 'P':
@@ -158,6 +179,7 @@ void letra(unsigned char k, int x, int y)
   case 'v':
   case 'V':
     cambiarCamara();
+    GestorCamaras::getInstancia()->setCamaraActiva((1 + GestorCamaras::getInstancia()->getIdCamaraActiva()) % GestorCamaras::getInstancia()->getNumCamaras());
     break;
   case 'h':
   case 'H':
@@ -165,9 +187,11 @@ void letra(unsigned char k, int x, int y)
     break;
   case '+': // acerca la cámara
     dCamara -= 5.0;
+    GestorCamaras::getInstancia()->getCamaraActiva()->alejar(-5.0);
     break;
   case '-': // aleja la cámara
     dCamara += 5.0;
+    GestorCamaras::getInstancia()->getCamaraActiva()->alejar(5.0);
     break;
   case '1':
     switchLuz(0);
@@ -206,6 +230,7 @@ void especial(int k, int x, int y)
   switch (k)
   {
   case GLUT_KEY_UP:
+    GestorCamaras::getInstancia()->getCamaraActiva()->rotarX(5.0);
     if(getCamara() == 0){
       rotxCamara += 5.0; // Cursor arriba + rotacion x
       if (rotxCamara > 360)
@@ -217,6 +242,7 @@ void especial(int k, int x, int y)
     }
     break;
   case GLUT_KEY_DOWN:
+    GestorCamaras::getInstancia()->getCamaraActiva()->rotarX(-5.0);
     if(getCamara() == 0)
       rotxCamara -= 5.0; // Cursor abajo - rotacion x
       if (rotxCamara < 0)
@@ -228,6 +254,7 @@ void especial(int k, int x, int y)
     }
     break;
   case GLUT_KEY_LEFT:
+  GestorCamaras::getInstancia()->getCamaraActiva()->rotarY(-5.0);
     if(getCamara() == 0){
       rotyCamara += 5.0; // Cursor izquierda + rotacion y
       if (rotyCamara > 360)
@@ -239,6 +266,7 @@ void especial(int k, int x, int y)
     }
     break;
   case GLUT_KEY_RIGHT:
+    GestorCamaras::getInstancia()->getCamaraActiva()->rotarY(5.0);
     if(getCamara() == 0){
       rotyCamara -= 5.0; // Cursor derecha - rotacion y
       if (rotyCamara < 0)

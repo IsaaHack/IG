@@ -78,6 +78,10 @@ GLfloat color_luz1_difusa[4] = {0.4, 1.0, 0.2, 1.0}; // Color difuso de la fuent
 
 Material material_dado, material_lata, material_tapas, m_cubo1, m_cubo2, m_cubo3;
 
+Camara camara1(Punto3D(0,0,10), Punto3D(), PERSPECTIVA, true);
+Camara camara2;
+Camara camara3(Punto3D(0,0,10), Punto3D(), ORTOGONAL, false);
+
 
 /**	void initModel()
 
@@ -91,6 +95,13 @@ void initModel(int modo_ejec, char *ruta_ply)
   normales = false;
   glPolygonMode(GL_FRONT_AND_BACK, modo);
   modo_ejecucion = modo_ejec;
+
+  camara1.rotarX(45);
+  camara1.rotarY(30);
+
+  
+  camara2.setCamara(Punto3D(-10,0,0), Punto3D());
+  camara2.rotarX(45);
 
   luz0.setPosicion(pos_luz0[0], pos_luz0[1], pos_luz0[2]);
   //luz0.setColorAmbiental(color_luz0_ambiental[0], color_luz0_ambiental[1], color_luz0_ambiental[2]);
@@ -146,7 +157,7 @@ void initModel(int modo_ejec, char *ruta_ply)
     objeto_spin.cargar(ruta_ply);
   }else{// Inicializamos los objetos de la escena
     //root_scene.addHijo(&helicoptero);
-    root_scene.addHijo(&lata);
+    root_scene.addHijo(&helicoptero);
     root_scene.addHijo(&t2);
     root_scene.addHijo(&peon);
     root_scene.addHijo(&t1);
@@ -278,16 +289,13 @@ void Dibuja(void)
 
   //aspas.actualizar();
   helicoptero.actualizar();
+  if(GestorCamaras::getInstancia()->getIdCamaraActiva() == 1){
+    Punto3D pos =helicoptero.getPosicion();
 
-  if(camara == 0){
-    transformacionVisualizacion(); // Carga transformacion de visualizacion
-  }else{
-    Punto3D pos = helicoptero.getPosicion();
-    cambiarCoordenadasCamara2(pos.x, pos.y, pos.z);
-    transformaciónVisualizacion2(-helicoptero.getGiroHelicoptero());
+    GestorCamaras::getInstancia()->getCamaraActiva()->moverFocus(pos);
   }
-  
-  //glLightfv(GL_LIGHT0, GL_POSITION, pos); // Declaracion de luz. Colocada aqui esta fija en la escena
+
+  GestorCamaras::getInstancia()->getCamaraActiva()->draw();
 
   ejesCoordenadas.draw(); // Dibuja los ejes
 

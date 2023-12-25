@@ -27,9 +27,73 @@
 	visual.h
 */
 
+#ifndef VISUAL_H
+#define VISUAL_H
 
+#include <objeto3D.h>
 
 //======================== visual.c
+
+#define PERSPECTIVA 1
+#define ORTOGONAL 0
+
+
+class Camara : public Objeto3D{
+private:
+	Punto3D focus;
+	Punto3D posicion;
+	bool tipo;
+	bool activa;
+
+	void inicializa(const Punto3D &posicion, const Punto3D &focus, bool tipo, bool activa);
+public:
+	Camara(const Punto3D &posicion, const Punto3D &focus, bool tipo = PERSPECTIVA, bool activa = false);
+	Camara();
+	~Camara();
+	void setCamara(const Punto3D &new_posicion, const Punto3D &new_focus);
+	void cambiarCoordenadasCamara(const Punto3D &new_posicion);
+	void cambiarFocus(const Punto3D &new_focus);
+	void moverFocus(const Punto3D &new_focus);
+	void moverFocus(const Vector3D &direccion);
+	void cambiarTipo(bool tipo);
+	void activar();
+	void desactivar();
+	Punto3D getFocus() const;
+	Punto3D getPosicion() const;
+	bool isActiva() const;
+	void draw();
+
+	void alejar(float d);
+	void acercar(float d);
+	void avanzar(float d);
+	void retroceder(float d);
+	void izquierda(float d);
+	void derecha(float d);
+	void moversePerpendicularAdelante(float d);
+	void moversePerpendicularAtras(float d);
+
+	void rotarX(float angulo);
+	void rotarY(float angulo);
+};
+
+class GestorCamaras{
+private:
+	int idCamaraActiva;
+	Camara* camaraActiva;
+	vector<Camara*> camaras;
+	static GestorCamaras* instancia;
+	GestorCamaras();
+	~GestorCamaras();
+public:
+	void addCamara(Camara* camara);
+	void setCamaraActiva(Camara* camara);
+	void setCamaraActiva(int id);
+	int getIdCamaraActiva() const;
+	int getNumCamaras() const;
+	void borrarCamara(Camara* camara);
+	Camara* getCamaraActiva();
+	static GestorCamaras* getInstancia();
+};
 
 
 /** 	void setCamara()
@@ -68,3 +132,5 @@ Inicializa el viewport para que ocupe toda la ventana X, y llama a fijaProyeccio
 **/
 
 void inicializaVentana (GLsizei ancho, GLsizei alto);
+
+#endif
