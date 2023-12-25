@@ -2,6 +2,8 @@
 
 void Ejes::draw()
   {
+    bool iluminacion = glIsEnabled(GL_LIGHTING);
+
     glDisable(GL_LIGHTING);
     glBegin(GL_LINES);
     {
@@ -18,5 +20,7 @@ void Ejes::draw()
       glVertex3f(0, 0, longitud);
     }
     glEnd();
-    glEnable(GL_LIGHTING);
+    
+    if(iluminacion)
+      glEnable(GL_LIGHTING);
   }

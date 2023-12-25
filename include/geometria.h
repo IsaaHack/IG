@@ -14,6 +14,16 @@ protected:
     Punto3D punto_pivote; // Punto pivote
 public:
     /**
+     * @brief Constructor por defecto
+    */
+    Geometria();
+
+    /**
+     * @brief Destructor por defecto
+    */
+
+    ~Geometria();
+    /**
      * @brief Carga un objeto PLY
      * @param nombre_archivo_ply Nombre del archivo PLY
      * @pre El archivo PLY debe existir
@@ -75,6 +85,13 @@ public:
      * @post El objeto es modificado
     */
     void setMaterial(const Material &material);
+
+    /**
+     * @brief Devuelve el material del objeto
+     * @param material Material
+     * @post El objeto no es modificado
+    */
+    Material getMaterial() const;
 
     /**
      * @brief Asigna un punto pivote al objeto

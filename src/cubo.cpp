@@ -1,4 +1,5 @@
 #include "cubo.h"
+#include "gestorIdGeometria.h"
 
 void Cubo::calcularVertices(){
   Punto3D puntos[8];
@@ -61,7 +62,7 @@ void Cubo::cargarTextura(const char *nombre_archivo_jpg){
 
 void Cubo::draw()
 {
-  if(malla.id_textura == 0){
+  if(malla.id_textura == 0 || GestorIdGeometria::getInstancia()->getModo() == MODO_SELECCION){
     Geometria::draw();
     return;
   }

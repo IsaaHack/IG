@@ -58,6 +58,9 @@ bool botonCentral = false;
 int ratonX = 0;
 int ratonY = 0;
 
+Geometria* seleccionado = nullptr;
+Material material_seleccionado;
+
 void clickRaton (int boton, int estado, int x, int y)
 {
 	switch (boton)
@@ -66,6 +69,27 @@ void clickRaton (int boton, int estado, int x, int y)
 			if (estado == GLUT_DOWN)
 			{
 				botonIzquierdo = true;
+
+				Geometria* old = seleccionado;
+
+				if(seleccionado != nullptr){
+					seleccionado->setMaterial(material_seleccionado);
+					seleccionado = nullptr;
+				}
+
+				seleccionado = pick(x, y);
+
+				if(seleccionado != nullptr && old != seleccionado){
+					Material material;
+
+					material.setColorEmision(1.0, 0.0, 0.0, 1.0);
+
+					material_seleccionado = seleccionado->getMaterial();
+					seleccionado->setMaterial(material);
+				}else if(seleccionado == old && seleccionado != nullptr){
+					seleccionado->setMaterial(material_seleccionado);
+					seleccionado = nullptr;
+				}
 			}
 			else
 			{
@@ -76,6 +100,11 @@ void clickRaton (int boton, int estado, int x, int y)
 			if (estado == GLUT_DOWN)
 			{
 				botonDerecho = true;
+
+				if(seleccionado != nullptr){
+					seleccionado->setMaterial(material_seleccionado);
+					seleccionado = nullptr;
+				}
 			}
 			else
 			{

@@ -44,6 +44,7 @@ modulo modelo.c
 #include "suelo.h"
 #include "cubo.h"
 #include "luz.h"
+#include "gestorIdGeometria.h"
 
 int modo, modo_ejecucion;
 bool iluminacion, normales;
@@ -57,10 +58,11 @@ ObjetoRevolucion objeto_spin;
 
 Helicoptero helicoptero;
 ControladorHelicoptero* controlador = helicoptero.getControlador();
-Aspas aspas(100.0,360.0*10.0);
-Suelo suelo;
+//Aspas aspas(100.0,360.0*10.0);
+//Suelo suelo;
 
-Cubo dado, cubo1, cubo2, cubo3;
+Cubo dado;
+//Cubo cubo1, cubo2, cubo3;
 ObjetoRevolucion lata, peon, peon1, peon2, peon3;
 
 Traslacion t1(Vector3D(1.5, 0, 0)), t2(Vector3D(0, 0, 3)), t3(Vector3D(-3.5, 0, 0)), t4(Vector3D(2, 0, 0));
@@ -146,6 +148,9 @@ void initModel(int modo_ejec, char *ruta_ply)
   luz0.activar();
   luz1.desactivar();
 
+  root_scene.addHijo(&camara1);
+  root_scene.addHijo(&camara2);
+  root_scene.addHijo(&camara3);
   root_scene.addHijo(&luz0);
   root_scene.addHijo(&luz1);
 
@@ -156,7 +161,7 @@ void initModel(int modo_ejec, char *ruta_ply)
     root_scene.addHijo(&objeto_spin);
     objeto_spin.cargar(ruta_ply);
   }else{// Inicializamos los objetos de la escena
-    //root_scene.addHijo(&helicoptero);
+    root_scene.addHijo(&ejesCoordenadas);
     root_scene.addHijo(&helicoptero);
     root_scene.addHijo(&t2);
     root_scene.addHijo(&peon);
@@ -212,11 +217,13 @@ void setModo(int M){
 
 void switchIluminacion(){
   if(modo == GL_FILL){
-    if(iluminacion){
-      iluminacion = false;
-    }else{
-      iluminacion = true;
-    }
+    iluminacion = !iluminacion;
+
+    if(iluminacion)
+      glEnable(GL_LIGHTING);
+    else
+      glDisable(GL_LIGHTING);
+
     glutPostRedisplay();
   }
 }
@@ -266,6 +273,36 @@ void switchLuz(int luz){
   glutPostRedisplay();
 }
 
+Geometria* pick(int x, int y){
+  GLint viewport[4];
+  unsigned char color[4];
+  bool iluminacion = glIsEnabled(GL_LIGHTING);
+
+  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+  glGetIntegerv(GL_VIEWPORT, viewport);
+  glDisable(GL_DITHER);
+  glDisable(GL_LIGHTING);
+
+  GestorIdGeometria::getInstancia()->setModo(MODO_SELECCION);
+  root_scene.draw();
+  glReadPixels(x, viewport[3] - y, 1, 1, GL_RGBA, GL_UNSIGNED_BYTE, color);
+
+  GestorIdGeometria::getInstancia()->setModo(MODO_NORMAL);
+
+  glEnable(GL_DITHER);
+  if(iluminacion)
+    glEnable(GL_LIGHTING);
+
+  unsigned int id = (color[0]-1) + (color[1]-1) * 256 + (color[2]-1) * 256 * 256;
+  id /= 2;
+  
+  if(id == 0)
+    return nullptr;
+  
+  return GestorIdGeometria::getInstancia()->getGeometria(id);
+}
+
 /**	void Dibuja( void )
 
 Procedimiento de dibujo del modelo. Es llamado por glut cada vez que se debe redibujar.
@@ -290,19 +327,10 @@ void Dibuja(void)
   //aspas.actualizar();
   helicoptero.actualizar();
   if(GestorCamaras::getInstancia()->getIdCamaraActiva() == 1){
-    Punto3D pos =helicoptero.getPosicion();
+    Punto3D pos = helicoptero.getPosicion();
 
     GestorCamaras::getInstancia()->getCamaraActiva()->moverFocus(pos);
   }
-
-  GestorCamaras::getInstancia()->getCamaraActiva()->draw();
-
-  ejesCoordenadas.draw(); // Dibuja los ejes
-
-  if(iluminacion)
-    glEnable(GL_LIGHTING);
-  else
-    glDisable(GL_LIGHTING);
 
   // Dibuja el modelo (A rellenar en prácticas 1,2 y 3)
 

@@ -43,7 +43,7 @@ void Camara::inicializa(const Punto3D &posicion, const Punto3D &focus, bool tipo
   this->tipo = tipo;
   
   if (activa)
-    activar();
+    GestorCamaras::getInstancia()->setCamaraActiva(this);
 }
 
 Camara::Camara(const Punto3D &posicion, const Punto3D &focus, bool tipo, bool activa){
@@ -90,13 +90,11 @@ void Camara::cambiarTipo(bool tipo){
 }
 
 void Camara::activar(){
-  GestorCamaras::getInstancia()->setCamaraActiva(this);
   activa = true;
 }
 
 void Camara::desactivar(){
   if(activa){
-    GestorCamaras::getInstancia()->setCamaraActiva(nullptr);
     activa = false;
   }
 }
@@ -114,14 +112,18 @@ bool Camara::isActiva() const{
 }
 
 void Camara::draw(){
-  if (!activa)
+  if (!activa){
+    //printf("No se puede dibujar una camara que no esta activa\n");
     return;
+  }
+
+  //printf("Dibujando camara\n");
 
   //glMatrixMode(GL_MODELVIEW);
   //glLoadIdentity();
   if(tipo == ORTOGONAL)
-    glOrtho(1, 2, 3, 4, 5, 6);
-  else
+    glOrtho(20, 20, 20, 20, 1, 100);
+  
     //gluPerspective(60.0, 1.0, 1.0, 1000.0);
   gluLookAt(posicion.x, posicion.y, posicion.z, focus.x, focus.y, focus.z, 0.0f, 1.0f, 0.0f);
   //glTranslatef(x, y, z);
@@ -282,14 +284,14 @@ void GestorCamaras::addCamara(Camara* camara){
 }
 
 void GestorCamaras::setCamaraActiva(Camara* camara){
-  if(camara == camaraActiva)
-    return;
-
   if(camara == nullptr){
     camaraActiva = nullptr;
     idCamaraActiva = -1;
     return;
   }
+
+  if(camara->isActiva())
+    return;
 
   for(int i = 0; i < camaras.size(); i++){
     if(camaras[i] == camara){
@@ -297,6 +299,9 @@ void GestorCamaras::setCamaraActiva(Camara* camara){
       break;
     }
   }
+
+  if(camaraActiva != nullptr)
+    camaraActiva->desactivar();
 
   camaraActiva = camara;  
 
@@ -307,7 +312,17 @@ void GestorCamaras::setCamaraActiva(int id){
   if(id < 0 || id >= camaras.size())
     return;
 
-  camaras[id]->activar();
+  printf("Nueva camara activa %d\n", id);
+
+
+  if(camaraActiva != nullptr)
+    camaraActiva->desactivar();
+
+  camaraActiva = camaras[id];
+
+  idCamaraActiva = id;
+
+  camaraActiva->activar();
 }
 
 int GestorCamaras::getIdCamaraActiva() const{

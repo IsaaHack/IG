@@ -67,4 +67,6 @@ int getCamara();
 
 void switchLuz(int luz);
 
+Geometria* pick(int x, int y);
+
 #endif

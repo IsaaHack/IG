@@ -29,6 +29,7 @@ Material::Material(const Material &m){
     setColorAmbiental(m.color_ambiental[0], m.color_ambiental[1], m.color_ambiental[2], m.color_ambiental[3]);
     setColorDifuso(m.color_difuso[0], m.color_difuso[1], m.color_difuso[2], m.color_difuso[3]);
     setColorEspecular(m.color_especular[0], m.color_especular[1], m.color_especular[2], m.color_especular[3]);
+    setColorEmision(m.color_emision[0], m.color_emision[1], m.color_emision[2], m.color_emision[3]);
     setExponenteBrillo(m.exponente_brillo);
     setIndiceRefraccion(m.indice_refraccion);
 }

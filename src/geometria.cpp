@@ -1,4 +1,19 @@
 #include "geometria.h"
+#include "gestorIdGeometria.h"
+
+Geometria::Geometria(){
+    GestorIdGeometria::getInstancia()->addGeometria(this);
+    material = Material();
+    punto_pivote = Punto3D();
+
+    unsigned unsigned_id = GestorIdGeometria::getInstancia()->getID(this);
+
+    printf("ID: %d\n", unsigned_id);
+}
+
+Geometria::~Geometria(){
+    GestorIdGeometria::getInstancia()->borraGeometria(this);
+}
 
 void Geometria::cargarTextura(const char *nombre_archivo_jpg){
     unsigned width, height;
@@ -12,23 +27,79 @@ void Geometria::cargarTextura(const char *nombre_archivo_jpg){
 }
 
 void Geometria::draw(){
-    material.draw();
+    GLuint id_textura = malla.id_textura;
+
+    if(GestorIdGeometria::getInstancia()->getModo() == MODO_NORMAL)
+        material.draw();
+    else{
+        unsigned unsigned_id = GestorIdGeometria::getInstancia()->getID(this);
+
+        unsigned char id1 = (unsigned char)unsigned_id;
+        unsigned char id2 = (unsigned char)(unsigned_id >> 8);
+        unsigned char id3 = (unsigned char)(unsigned_id >> 16);
+
+        glColor3b(id1, id2, id3);
+
+        malla.id_textura = 0;
+    }
+    
     malla.draw();
+
+    malla.id_textura = id_textura;
 }
 
 void Geometria::drawFlat(bool draw_normales){
-    material.draw();
+    GLuint id_textura = malla.id_textura;
+
+    if(GestorIdGeometria::getInstancia()->getModo() == MODO_NORMAL)
+        material.draw();
+    else{
+        unsigned unsigned_id = GestorIdGeometria::getInstancia()->getID(this);
+
+        glColor3bv((GLbyte*)&unsigned_id);
+
+        malla.id_textura = 0;
+    }
+
     malla.drawFlat(draw_normales);
+
+    malla.id_textura = id_textura;
 }
 
 void Geometria::drawSmooth(bool draw_normales){
-    material.draw();
+    GLuint id_textura = malla.id_textura;
+
+    if(GestorIdGeometria::getInstancia()->getModo() == MODO_NORMAL)
+        material.draw();
+    else{
+        unsigned unsigned_id = GestorIdGeometria::getInstancia()->getID(this);
+
+        glColor3bv((GLbyte*)&unsigned_id);
+
+        malla.id_textura = 0;
+    }
+
     malla.drawSmooth(draw_normales);
+
+    malla.id_textura = id_textura;
 }
 
 void Geometria::draw(bool draw_normales){
-    material.draw();
+    GLuint id_textura = malla.id_textura;
+
+    if(GestorIdGeometria::getInstancia()->getModo() == MODO_NORMAL)
+        material.draw();
+    else{
+        unsigned unsigned_id = GestorIdGeometria::getInstancia()->getID(this);
+
+        glColor3bv((GLbyte*)&unsigned_id);
+
+        malla.id_textura = 0;
+    }
+
     malla.draw(draw_normales);
+
+    malla.id_textura = id_textura;
 }
 
 void Geometria::clear(){
@@ -41,6 +112,10 @@ void Geometria::setModoSombreado(int modo){
 
 void Geometria::setMaterial(const Material &material){
     this->material = material;
+}
+
+Material Geometria::getMaterial() const{
+    return material;
 }
 
 void Geometria::setPuntoPivote(const Punto3D &punto_pivote)
