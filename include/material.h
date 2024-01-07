@@ -39,6 +39,13 @@ public:
     Material(const Material &m);
 
     /**
+     * @brief Operador de asignación
+     * @param m Material a copiar
+     * @return Material copiado
+     */
+    Material& operator=(const Material &m);
+
+    /**
      * @brief Establece el color ambiental
      * @param r Componente roja
      * @param g Componente verde
@@ -87,6 +94,37 @@ public:
      * @post El índice de refracción es modificado
      */
     void setIndiceRefraccion(GLfloat indice_refraccion);
+
+    /**
+     * @brief Devuelve el color ambiental
+     * @return Color ambiental
+     */
+    GLfloat* getColorAmbiental();
+
+    /**
+     * @brief Devuelve el color difuso
+     * @return Color difuso
+     */
+    GLfloat* getColorDifuso();
+
+    /**
+     * @brief Devuelve el color especular
+     * @return Color especular
+     */
+    GLfloat* getColorEspecular();
+
+    /**
+     * @brief Devuelve el color emisión
+     * @return Color emisión
+     */
+    GLfloat* getColorEmision();
+
+    /**
+     * @brief Devuelve el exponente de brillo
+     * @return Exponente de brillo
+     */
+    GLfloat getExponenteBrillo();
+
 
     void draw();
 };

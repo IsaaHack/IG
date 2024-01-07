@@ -91,7 +91,7 @@ int main(int argc, char *argv[])
   glutInitWindowPosition(0, 0);
   glutInitWindowSize(800, 800);
   glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH);
-  glutCreateWindow("IG. Curso 2022/23. Autor: Isaac Brao Aissaoni");
+  int mainWindow = glutCreateWindow("IG. Curso 2022/23. Autor: Isaac Brao Aissaoni");
 
   // Inicializa las variables del modelo
   initModel(modo_ejecucion, nombre_fichero);
@@ -109,6 +109,9 @@ int main(int argc, char *argv[])
 
   // Funcion de fondo
   glutTimerFunc(30, idle, 0);
+
+  // Crea el menu de la ventana principal
+  createMenu();
 
   // Inicializa parametros de openGL
   glEnable(GL_DEPTH_TEST);

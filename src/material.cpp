@@ -34,6 +34,16 @@ Material::Material(const Material &m){
     setIndiceRefraccion(m.indice_refraccion);
 }
 
+Material& Material::operator=(const Material &m){
+    setColorAmbiental(m.color_ambiental[0], m.color_ambiental[1], m.color_ambiental[2], m.color_ambiental[3]);
+    setColorDifuso(m.color_difuso[0], m.color_difuso[1], m.color_difuso[2], m.color_difuso[3]);
+    setColorEspecular(m.color_especular[0], m.color_especular[1], m.color_especular[2], m.color_especular[3]);
+    setColorEmision(m.color_emision[0], m.color_emision[1], m.color_emision[2], m.color_emision[3]);
+    setExponenteBrillo(m.exponente_brillo);
+    setIndiceRefraccion(m.indice_refraccion);
+    return *this;
+}
+
 void Material::setColorAmbiental(GLfloat r, GLfloat g, GLfloat b, GLfloat a){
     color_ambiental[0] = r;
     color_ambiental[1] = g;
@@ -68,6 +78,26 @@ void Material::setExponenteBrillo(GLfloat exponente_brillo){
 
 void Material::setIndiceRefraccion(GLfloat indice_refraccion){
     this->indice_refraccion = indice_refraccion;
+}
+
+GLfloat* Material::getColorAmbiental(){
+    return color_ambiental;
+}
+
+GLfloat* Material::getColorDifuso(){
+    return color_difuso;
+}
+
+GLfloat* Material::getColorEspecular(){
+    return color_especular;
+}
+
+GLfloat* Material::getColorEmision(){
+    return color_emision;
+}
+
+GLfloat Material::getExponenteBrillo(){
+    return exponente_brillo;
 }
 
 void Material::draw()

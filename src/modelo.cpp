@@ -82,7 +82,6 @@ Material material_dado, material_lata, material_tapas, m_cubo1, m_cubo2, m_cubo3
 
 Camara camara1(Punto3D(0,0,10), Punto3D(), PERSPECTIVA, true);
 Camara camara2;
-Camara camara3(Punto3D(0,0,10), Punto3D(), ORTOGONAL, false);
 
 
 /**	void initModel()
@@ -150,7 +149,6 @@ void initModel(int modo_ejec, char *ruta_ply)
 
   root_scene.addHijo(&camara1);
   root_scene.addHijo(&camara2);
-  root_scene.addHijo(&camara3);
   root_scene.addHijo(&luz0);
   root_scene.addHijo(&luz1);
 
@@ -278,6 +276,8 @@ Geometria* pick(int x, int y){
   unsigned char color[4];
   bool iluminacion = glIsEnabled(GL_LIGHTING);
 
+  glClearColor(0.0, 0.0, 0.0, 1.0); // Fija el color de fondo a negro
+
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
   glGetIntegerv(GL_VIEWPORT, viewport);
@@ -348,6 +348,7 @@ Procedimiento de fondo. Es llamado por glut cuando no hay eventos pendientes.
 **/
 void idle(int v)
 {
+  modificarMenu();
   glutPostRedisplay();        // Redibuja
   glutTimerFunc(30, idle, 0); // Vuelve a activarse dentro de 30 ms
 }

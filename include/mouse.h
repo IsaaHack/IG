@@ -27,6 +27,8 @@
 	mouse.h
 */
 
+#include "GL/glut.h"
+
 
 void clickRaton (int boton, int estado, int x, int y);
 
@@ -37,3 +39,21 @@ void clickRaton (int boton, int estado, int x, int y);
 	y: posicion del cursor en coordenadas de pantalla
 **/
 void RatonMovido (int x, int y);
+
+void menuOptions();
+
+void submenu1Options();
+
+void submenu2Options();
+
+void menu(int option);
+
+void submenu1(int option);
+
+void submenu2(int option);
+
+void createMenu();
+
+void modificarMenu();
+
+void aplicarMaterial();
